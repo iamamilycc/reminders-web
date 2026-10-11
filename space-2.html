@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="data:,">
+<title>提醒事项打卡 · 网页版</title>
+<style>
+:root{--bg:#f2f2f7;--card:#fff;--card2:#fff;--text:#1c1c1e;--sub:#6e6e73;--line:#e5e5ea;--blue:#007aff;--red:#ff3b30;--orange:#ff9500;--gray:#8e8e93;--radius:18px;--shadow:0 6px 24px rgba(0,0,0,.06)}
+@media(prefers-color-scheme:dark){:root{--bg:#000;--card:#1c1c1e;--card2:#2c2c2e;--text:#f5f5f7;--sub:#aeaeb2;--line:#38383a;--shadow:none}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue","PingFang SC","Microsoft YaHei",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--blue);text-decoration:none}
+.wrap{max-width:1120px;margin:0 auto;padding:18px 16px 40px}
+.top{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;justify-content:space-between}
+h1{font-size:28px;line-height:1.1;margin:4px 0 4px;letter-spacing:-.02em}.lead{color:var(--sub);font-size:14px;line-height:1.6;max-width:680px;margin:0}
+.seg{display:flex;background:#e9e9ee;border-radius:999px;padding:3px;gap:2px}
+@media(prefers-color-scheme:dark){.seg{background:#2c2c2e}}
+.seg button{border:0;background:transparent;padding:8px 16px;border-radius:999px;font-weight:600;cursor:pointer;color:var(--text)}
+.seg button.on{background:var(--card);box-shadow:0 1px 6px rgba(0,0,0,.12)}
+.pill{background:var(--card);border:1px solid var(--line);padding:9px 14px;border-radius:999px;font-weight:700}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}
+.grid4.pg{margin:8px 0 2px}
+.pcards-label{font-weight:700;font-size:15px;margin-top:16px}.pcards-label span{color:var(--sub);font-size:12px;font-weight:400;margin-left:8px}
+@media(max-width:700px){.grid4{grid-template-columns:1fr 1fr}}
+.stat{background:var(--card);border-radius:16px;padding:14px;box-shadow:var(--shadow)}
+button.stat{font:inherit;color:inherit;text-align:left;border:2px solid transparent;width:100%;cursor:pointer}
+button.stat:hover{border-color:var(--line)}
+button.stat.on{border-color:var(--blue)}
+.stat b{font-size:28px;display:block;margin-top:6px}.dot{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:16px}
+.layout{display:grid;grid-template-columns:1.35fr .85fr;gap:16px;align-items:start}.layout>*,.grid4>*{min-width:0}
+@media(max-width:860px){.layout{grid-template-columns:1fr}}
+.card{background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:16px}
+.card h2{font-size:17px;margin:0 0 4px}.card p{color:var(--sub);font-size:13px;line-height:1.6;margin:6px 0}
+.task{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);align-items:flex-start}
+.task:last-child{border-bottom:0}
+.check{width:26px;height:26px;border-radius:50%;border:2px solid #c7c7cc;background:transparent;flex:0 0 26px;cursor:pointer;display:grid;place-items:center;font-size:14px;color:#fff;margin-top:2px}
+.check.done{background:var(--blue);border-color:var(--blue)}
+.task-main{flex:1;min-width:0}.task-title{font-weight:600;line-height:1.4}.task-title.done{text-decoration:line-through;color:var(--sub)}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.tag{font-size:11px;padding:3px 7px;border-radius:999px;background:#f2f2f7;color:#3a3a3c;border:1px solid var(--line)}
+@media(prefers-color-scheme:dark){.tag{background:#2c2c2e;color:#e5e5ea}}
+.tag.red{background:#fff1f0;color:#c81e1e}
+.btn{border:0;border-radius:999px;padding:9px 14px;font-weight:600;cursor:pointer;background:var(--blue);color:#fff}
+.btn.secondary{background:#eef2ff;color:#0a4dcc;border:1px solid #dbe4ff}.btn.ghost{background:transparent;color:var(--blue);border:1px solid var(--line)}.btn.danger{background:#fff1f0;color:#d70015;border:1px solid #ffd6d3}.btn.small{padding:6px 10px;font-size:13px}
+input,select,textarea{width:100%;max-width:100%;min-width:0;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:var(--card2);color:var(--text);font-size:14px}
+input[type="date"],input[type="time"]{display:block;width:100%;min-width:0;max-width:100%;-webkit-appearance:none;appearance:none}
+input[type="date"]::-webkit-date-and-time-value,input[type="time"]::-webkit-date-and-time-value{text-align:left;margin:0}
+input[type="date"]::-webkit-calendar-picker-indicator,input[type="time"]::-webkit-calendar-picker-indicator{margin-left:4px;padding:0}
+label{font-size:12px;font-weight:600;color:var(--sub);display:block;margin:10px 0 6px}
+.row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}.row>*{min-width:0}@media(max-width:560px){.row{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:700px){.dtrow{grid-template-columns:minmax(0,1fr)}}
+.week{display:flex;gap:6px;flex-wrap:wrap}.week button{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--card);cursor:pointer;font-weight:600}.week button.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.notice{border:1px solid #b8d8ff;background:#eef6ff;color:#123a66;border-radius:14px;padding:12px 14px;font-size:13px;line-height:1.7}
+@media(prefers-color-scheme:dark){.notice{background:#0a243f;color:#bfe0ff;border-color:#1d4e7a}}
+.bar{height:10px;background:#eee;border-radius:999px;overflow:hidden}.bar i{display:block;height:100%;background:var(--blue)}
+.chart{display:flex;align-items:flex-end;gap:8px;height:90px;margin-top:10px}.chart div{flex:1;text-align:center}.chart i{display:block;background:var(--red);border-radius:6px 6px 0 0;min-height:4px}.chart span{font-size:11px;color:var(--sub)}
+.task-actions{display:flex;flex-direction:column;gap:6px;flex:0 0 auto}
+.task.editing{outline:2px solid var(--blue);outline-offset:4px;border-radius:10px}
+.log{font-size:13px;line-height:1.7}.log div{padding:8px 0;border-bottom:1px dashed var(--line)}
+details{border-top:1px solid var(--line);padding-top:10px;margin-top:10px}summary{cursor:pointer;font-weight:700}
+code{background:#f2f2f7;padding:2px 5px;border-radius:6px;font-size:12px;word-break:break-all}
+@media(prefers-color-scheme:dark){code{background:#2c2c2e}}
+.flex{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.arch{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}@media(max-width:560px){.arch{grid-template-columns:1fr}}
+.arch div{border:1px solid var(--line);border-radius:12px;padding:10px 12px}.arch b{font-size:13px}.arch p{margin:4px 0 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <h1>提醒事项打卡 · 网页版</h1>
+      <p class="lead">能在浏览器打开的版本：苹果提醒事项的用法 + 没做到扣分统计 + 循环重复 + 两个人分别打卡。云端已改用 GitHub：公开仓库放网页、用 GitHub Pages 打开；私有仓库放打卡数据。</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+      <div class="seg" id="userSeg"><button data-u="me" class="on">👤 我</button><button data-u="kid">🧒 孩子</button><button data-u="all">全部</button></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="pill">我的分数 <span id="scoreMe">100</span></span><span class="pill">孩子分数 <span id="scoreKid">100</span></span></div>
+    </div>
+  </div>
+
+  <div class="seg" id="pageTabs" style="margin-top:14px"><button data-p="main" class="on">📋 提醒事项</button><button data-p="help">📖 说明与同步</button></div>
+
+  <div id="pageMain">
+  <div class="pcards-label">👤 我的卡片<span>只算我的事项</span></div>
+  <div class="grid4 pg">
+    <button type="button" class="stat" data-person="me" data-view="today"><div class="dot" style="background:var(--blue)">◷</div><span style="color:var(--sub);font-size:13px">今天</span><b id="cTodayMe">0</b></button>
+    <button type="button" class="stat" data-person="me" data-view="plan"><div class="dot" style="background:var(--red)">▦</div><span style="color:var(--sub);font-size:13px">计划</span><b id="cPlanMe">0</b></button>
+    <button type="button" class="stat" data-person="me" data-view="open"><div class="dot" style="background:var(--gray)">☰</div><span style="color:var(--sub);font-size:13px">全部未完成</span><b id="cAllMe">0</b></button>
+    <button type="button" class="stat" data-person="me" data-view="flag"><div class="dot" style="background:var(--orange)">⚑</div><span style="color:var(--sub);font-size:13px">旗标</span><b id="cFlagMe">0</b></button>
+  </div>
+  <div class="pcards-label">🧒 孩子的卡片<span>只算孩子的事项</span></div>
+  <div class="grid4 pg">
+    <button type="button" class="stat" data-person="kid" data-view="today"><div class="dot" style="background:var(--blue)">◷</div><span style="color:var(--sub);font-size:13px">今天</span><b id="cTodayKid">0</b></button>
+    <button type="button" class="stat" data-person="kid" data-view="plan"><div class="dot" style="background:var(--red)">▦</div><span style="color:var(--sub);font-size:13px">计划</span><b id="cPlanKid">0</b></button>
+    <button type="button" class="stat" data-person="kid" data-view="open"><div class="dot" style="background:var(--gray)">☰</div><span style="color:var(--sub);font-size:13px">全部未完成</span><b id="cAllKid">0</b></button>
+    <button type="button" class="stat" data-person="kid" data-view="flag"><div class="dot" style="background:var(--orange)">⚑</div><span style="color:var(--sub);font-size:13px">旗标</span><b id="cFlagKid">0</b></button>
+  </div>
+
+  <div class="layout">
+    <div>
+      <div class="card" id="listCard">
+        <div class="flex" style="justify-content:space-between"><h2 id="listTitle">我的列表 · 提醒</h2><span class="tag" id="filterLabel">显示：我</span></div>
+        <div id="taskList"></div>
+      </div>
+
+      <div class="card" id="formCard">
+        <h2 id="formTitle">＋ 新建事项</h2>
+        <label>标题</label><input id="fTitle" placeholder="请输入事项标题">
+        <div class="row">
+          <div><label>归谁打卡</label><select id="fOwner"><option value="me">我</option><option value="kid">孩子</option><option value="shared">共用（两人都要做）</option></select></div>
+          <div><label>难度（自动定扣分）</label><select id="fDiff"><option value="2">非常简单 · 扣 2 分</option><option value="3">简单 · 扣 3 分</option><option value="5" selected>一般 · 扣 5 分</option><option value="8">较难 · 扣 8 分</option><option value="12">非常难 · 扣 12 分</option><option value="10">重要事项 · 扣 10 分</option></select></div>
+        </div>
+        <div class="row dtrow">
+          <div><label>日期</label><input type="date" id="fDate"></div>
+          <div><label>时间</label><input type="time" id="fTime" value="09:00"></div>
+        </div>
+        <div class="row">
+          <div><label>循环</label><select id="fRepeat"><option value="none">不重复</option><option value="daily">每天</option><option value="everyN">每隔 N 天</option><option value="weekly">每周</option><option value="weekdays">指定星期（可多选）</option><option value="monthly">每月</option></select></div>
+          <div><label>间隔 N（每隔 N 天/周/月时用）</label><select id="fInterval"><option>1</option><option>2</option><option>3</option><option>7</option><option selected>10</option><option>14</option><option>30</option></select></div>
+        </div>
+        <label>指定星期（选了「指定星期」时点亮）</label>
+        <div class="week" id="weekPicker"></div>
+        <div class="row">
+          <div><label>单独改扣分（0–20）</label><input type="number" id="fPenalty" min="0" max="20" value="5"></div>
+          <div><label>旗标</label><select id="fFlag"><option value="0">不旗标</option><option value="1">⚑ 旗标（重要）</option></select></div>
+        </div>
+        <label>备注</label><textarea id="fNote" rows="2" placeholder="备注，可不填"></textarea>
+        <div class="flex" style="margin-top:12px"><button class="btn" id="btnAdd">添加事项</button><button class="btn ghost" id="btnCancelEdit" style="display:none">取消编辑</button><button class="btn danger" id="btnDeleteTask" style="display:none">删除这条事项</button><button class="btn ghost" id="btnExport">导出 JSON 备份</button><label class="btn secondary" style="margin:0;cursor:pointer">导入 JSON<input type="file" accept=".json" style="display:none" id="fileImport"></label></div>
+        <p id="addMsg"></p>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <div class="flex" style="justify-content:space-between"><h2>📊 统计</h2><span class="tag" id="statsLabel">统计：全部</span></div>
+        <p>完成率 <strong id="rateText">暂无打卡</strong> · 累计扣分 <strong id="totalPenalty">0</strong> 分</p>
+        <div class="bar"><i id="rateBar" style="width:0%"></i></div>
+        <p>每人从 100 分单独算：我的扣分只扣我的分，孩子的只扣孩子的分，共用事项按实际点「没做到」的人扣。</p>
+        <h2 style="margin-top:18px">近 7 天扣分</h2>
+        <div class="chart" id="chart"></div>
+        <h2 style="margin-top:18px">扣分记录</h2>
+        <div class="log" id="logList"></div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div id="pageHelp" style="display:none;margin-top:16px">
+  <div class="notice"><strong>云端改用 GitHub 了，分工是这样的：</strong>
+    <div class="arch">
+      <div><b>公开代码仓库 → GitHub Pages 打开网页</b><p>只放 <code>index.html</code> 网页文件，本身不含任何数据和令牌，谁有网址都能打开页面，但看不到你们的打卡数据。</p></div>
+      <div><b>私有数据仓库 → 只放一个 <code>data.json</code></b><p>全部事项、打卡和扣分记录都存在这里。网页通过 GitHub Contents API 读写这个文件，仓库设为 Private，别人打不开。</p></div>
+    </div>
+    令牌用 GitHub 个人访问令牌，只填在各自手机/电脑的这一页里、只保存在各自设备本地，<strong>绝不写进代码、绝不上传到公开仓库</strong>。我这边没有你的 GitHub 账号和令牌，没法替你直接建仓库或存进去 — 你按下方 4 步建好后，点一次推送就能用。
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h2>📖 使用说明</h2>
+    <p>点圆圈 = 完成，循环事项会自动生成下一次；点「没做到」= 按难度扣分并进入下一次。难度定分：非常简单 2 分 · 简单 3 分 · 一般 5 分 · 较难 8 分 · 非常难 12 分，可单独改。点每条事项右边的「编辑」，可以改它的标题、归属、日期时间、循环和扣分，也能在编辑区里删除这条（删除要点两次确认）；改完记得点「推送到 GitHub」同步。主页上方我和孩子各有一组「今天 / 计划 / 全部未完成 / 旗标」卡片，数字只算各自的事项（共用事项两边都算）；点某人的卡片，列表就切到那个人的对应事项，再点一次同一张卡片回到那个人的全部。全部事项保存在私有数据仓库中，打开页面后到「说明与同步」页填好令牌、点「从 GitHub 拉取」即可载入。</p>
+  </div>
+
+      <div class="card" id="github">
+        <h2>☁️ GitHub 云端同步</h2>
+        <p><strong>第 1 步 · 公开代码仓库（放网页）：</strong>在 GitHub 新建一个 <strong>Public</strong> 仓库，例如 <code>reminders-web</code>，把本页的 <code>index.html</code> 放进去；再到仓库 Settings → Pages → Source 选 <code>main</code> 分支 / 根目录，保存后得到网址 <code>https://你的用户名.github.io/reminders-web/</code>，你和孩子都收藏这个网址打开。</p>
+        <p><strong>第 2 步 · 私有数据仓库（放数据）：</strong>再新建一个 <strong>Private</strong> 仓库，例如 <code>reminders-data</code>，什么都不用放 — 第一次点「推送」时网页会自动在里面创建 <code>data.json</code>。</p>
+        <p><strong>第 3 步 · 令牌：</strong>GitHub 头像 → Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token：只选私有数据仓库 <code>reminders-data</code>，权限只给 <code>Contents: Read and write</code>。生成后复制令牌（只显示一次）。</p>
+        <p><strong>第 4 步 · 在下面填好并推送：</strong>你和孩子在各自设备打开网页，各自填同一数据仓库和各自的令牌。改完事项记得点「推送」，另一台先点「拉取」再打卡，避免互相覆盖。</p>
+        <label>数据仓库（GitHub 用户名 / 私有仓库名）</label><input id="ghRepo" value="iamamilycc/reminders-data" placeholder="例如：yourname/reminders-data" autocomplete="off">
+        <div class="row">
+          <div><label>数据文件路径</label><input id="ghPath" value="data.json"></div>
+          <div><label>分支</label><input id="ghBranch" value="main"></div>
+        </div>
+        <label>代码仓库（选填，只用来拼 Pages 网址提示）</label><input id="ghCodeRepo" value="iamamilycc/reminders-web" placeholder="例如：yourname/reminders-web" autocomplete="off">
+        <label>GitHub 个人访问令牌（只保存在这台设备本地）</label><input id="ghToken" type="password" placeholder="粘贴 Fine-grained token" autocomplete="off">
+        <div class="flex" style="margin-top:12px"><button class="btn" id="btnPush">↑ 推送到 GitHub</button><button class="btn secondary" id="btnPull">↓ 从 GitHub 拉取</button><button class="btn ghost" id="btnClearToken">清除本机令牌</button></div>
+        <p id="ghMsg">状态：还没同步。推送后，私有仓库里会出现 data.json，那就是云端存档。</p>
+        <p id="ghPagesHint"></p>
+        <details><summary>下载本页 / 操作步骤</summary>
+          <p>公开仓库里只放网页文件，不要把令牌、<code>data.json</code> 或导出的备份传进公开仓库。数据永远只进私有仓库。</p>
+          <div class="flex"><button class="btn ghost" id="btnDownload">下载本页 HTML</button><button class="btn ghost" id="btnCopySteps">复制 GitHub 操作步骤</button></div>
+        </details>
+      </div>
+
+      <div class="card">
+        <h2>两个人怎么用？</h2>
+        <p>顶部切「我 / 孩子」只看各自的事项；新建时选归属。共用事项两个人都要完成，点「没做到」只扣当前所选档案那个人。分数分开算，统计和扣分记录都会写清是谁。</p>
+        <p>本页在本机浏览器也会留一份，关掉再打开不丢；跨手机、跨人同步靠本页的 GitHub 推送 / 拉取（数据在私有仓库的 <code>data.json</code> 里）。</p>
+      </div>
+  </div>
+  <p style="text-align:center;color:var(--sub);font-size:12px">网页版 · GitHub Pages 打开网页 · GitHub Contents API 读写私有仓库 data.json · 令牌不写进代码</p>
+</div>
+
+<script>
+function todayStr(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+var TODAY=todayStr();
+var DIFF_LABEL={'2':'非常简单','3':'简单','5':'一般','8':'较难','12':'非常难','10':'重要'};
+var seed=[];
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function num(v,def,min,max){var n=Number(v);if(!isFinite(n))n=def;if(min!=null)n=Math.max(min,n);if(max!=null)n=Math.min(max,n);return n}
+function cleanTask(raw,idx){
+ if(!raw||typeof raw!=='object')return null;
+ var title=String(raw.t||raw.title||'').slice(0,200);if(!title)return null;
+ var owner=['me','kid','shared'].indexOf(raw.owner)>-1?raw.owner:'me';
+ var repeat=['none','daily','everyN','weekly','weekdays','monthly'].indexOf(raw.repeat)>-1?raw.repeat:'none';
+ var weekdays=Array.isArray(raw.weekdays)?raw.weekdays.map(function(x){return num(x,0,0,6)}).filter(function(x,i,a){return a.indexOf(x)===i}):[];
+ var due=/^\d{4}-\d{2}-\d{2}$/.test(String(raw.due||''))?String(raw.due):TODAY;
+ var time=/^\d{2}:\d{2}$/.test(String(raw.time||''))?String(raw.time):'09:00';
+ return {id:num(raw.id,idx+1,0,1e9),t:title,owner:owner,due:due,time:time,repeat:repeat,interval:num(raw.interval,1,1,365),weekdays:weekdays,anchorDay:num(raw.anchorDay,new Date(due+'T12:00:00').getDate(),1,31),pen:num(raw.pen,5,0,20),diff:num(raw.diff,5,0,20),flag:raw.flag?1:0,note:String(raw.note||'').slice(0,500),done:!!raw.done};
+}
+function cleanLog(raw){
+ if(!raw||typeof raw!=='object')return null;
+ return {date:/^\d{4}-\d{2}-\d{2}$/.test(String(raw.date||''))?String(raw.date):TODAY,title:String(raw.title||'').slice(0,200),pen:num(raw.pen,0,0,20),op:raw.op==='kid'?'kid':'me',who:['me','kid','shared'].indexOf(raw.who)>-1?raw.who:'me',reason:String(raw.reason||'').slice(0,200)};
+}
+function cleanData(p){
+ if(!p||!Array.isArray(p.tasks))return null;
+ var tasks=p.tasks.map(cleanTask).filter(Boolean);
+ var logs=Array.isArray(p.logs)?p.logs.map(cleanLog).filter(Boolean):[];
+ var maxId=tasks.reduce(function(m,t){return Math.max(m,t.id)},0);
+ return {tasks:tasks,logs:logs,doneCount:num(p.doneCount,0,0,1e9),doneBy:{me:num(p.doneBy&&p.doneBy.me,0,0,1e9),kid:num(p.doneBy&&p.doneBy.kid,0,0,1e9)},seq:Math.max(num(p.seq,100,0,1e9),maxId),filter:'me'};
+}
+var state={tasks:seed.map(cleanTask).filter(Boolean),doneCount:0,doneBy:{me:0,kid:0},logs:[],filter:'me',seq:100};
+try{var saved=localStorage.getItem('reminders-web-v3');if(saved){var cd=cleanData(JSON.parse(saved));if(cd)state=cd;}}catch(e){}
+function save(){try{localStorage.setItem('reminders-web-v3',JSON.stringify({tasks:state.tasks,logs:state.logs,doneCount:state.doneCount,doneBy:state.doneBy||{me:0,kid:0},seq:state.seq}));}catch(e){}}
+function ownerName(o){return o==='me'?'我':o==='kid'?'孩子':'共用'}
+function repeatText(t){var iv=num(t.interval,1,1,365);if(t.repeat==='daily')return '🔁 每天';if(t.repeat==='everyN')return '🔁 每隔 '+iv+' 天';if(t.repeat==='weekly')return '🔁 每周';if(t.repeat==='monthly')return '🔁 每月'+num(t.anchorDay,1,1,31)+'号';if(t.repeat==='weekdays'){var n=['日','一','二','三','四','五','六'];return '🔁 每周'+(t.weekdays||[]).map(function(x){return n[num(x,0,0,6)]}).join('、')}return '单次'}
+function fmt(dt){return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0')}
+function nextDate(t,fromStr){
+ var dt=new Date(fromStr+'T12:00:00');if(isNaN(dt.getTime()))dt=new Date(TODAY+'T12:00:00');
+ if(t.repeat==='daily'){dt.setDate(dt.getDate()+1);return fmt(dt)}
+ if(t.repeat==='everyN'){dt.setDate(dt.getDate()+num(t.interval,1,1,365));return fmt(dt)}
+ if(t.repeat==='weekly'){dt.setDate(dt.getDate()+7*num(t.interval,1,1,52));return fmt(dt)}
+ if(t.repeat==='monthly'){var anchor=num(t.anchorDay,dt.getDate(),1,31);var total=dt.getFullYear()*12+dt.getMonth()+num(t.interval,1,1,24);var y=Math.floor(total/12);var m=total%12;var last=new Date(y,m+1,0).getDate();return fmt(new Date(y,m,Math.min(anchor,last)))}
+ if(t.repeat==='weekdays'&&t.weekdays&&t.weekdays.length){for(var i=1;i<=14;i++){var c=new Date(dt);c.setDate(dt.getDate()+i);if(t.weekdays.indexOf(c.getDay())>-1)return fmt(c)}}
+ return null;
+}
+function visible(t){if(state.filter==='all')return true;return t.owner===state.filter||t.owner==='shared'}
+var viewMode='all';
+function inView(t){
+ if(viewMode==='today')return !t.done&&t.due<=TODAY;
+ if(viewMode==='plan')return !t.done&&t.due>TODAY;
+ if(viewMode==='open')return !t.done;
+ if(viewMode==='flag')return !t.done&&!!t.flag;
+ return true;
+}
+function render(){
+ var personName=state.filter==='me'?'我':state.filter==='kid'?'孩子':'全部';
+ var viewNames={today:'今天',plan:'计划',open:'全部未完成',flag:'旗标'};
+ document.getElementById('filterLabel').textContent='显示：'+personName+(viewMode!=='all'?' · '+viewNames[viewMode]:'');
+ document.getElementById('listTitle').textContent=(state.filter==='me'?'我的列表':state.filter==='kid'?'孩子的列表':'全部列表')+' · 提醒';
+ document.getElementById('statsLabel').textContent='统计：'+personName;
+ document.querySelectorAll('.stat[data-view]').forEach(function(el){el.classList.toggle('on',el.getAttribute('data-view')===viewMode&&(state.filter==='all'||el.getAttribute('data-person')===state.filter))});
+ [['me','Me'],['kid','Kid']].forEach(function(pair){
+   var arr=state.tasks.filter(function(t){return t.owner===pair[0]||t.owner==='shared'});
+   document.getElementById('cToday'+pair[1]).textContent=arr.filter(function(t){return !t.done&&t.due<=TODAY}).length;
+   document.getElementById('cPlan'+pair[1]).textContent=arr.filter(function(t){return !t.done&&t.due>TODAY}).length;
+   document.getElementById('cAll'+pair[1]).textContent=arr.filter(function(t){return !t.done}).length;
+   document.getElementById('cFlag'+pair[1]).textContent=arr.filter(function(t){return !t.done&&t.flag}).length;
+ });
+ var mePen=state.logs.filter(function(l){return l.op==='me'}).reduce(function(s,l){return s+num(l.pen,0,0,20)},0);
+ var kidPen=state.logs.filter(function(l){return l.op==='kid'}).reduce(function(s,l){return s+num(l.pen,0,0,20)},0);
+ document.getElementById('scoreMe').textContent=Math.max(0,100-mePen);
+ document.getElementById('scoreKid').textContent=Math.max(0,100-kidPen);
+ var profLogs=state.logs.filter(function(l){return state.filter==='all'||l.op===state.filter});
+ document.getElementById('totalPenalty').textContent=profLogs.reduce(function(s,l){return s+num(l.pen,0,0,20)},0);
+ var doneForProf=state.filter==='all'?state.doneCount:num((state.doneBy||{})[state.filter],0,0,1e9);
+ var totalActions=doneForProf+profLogs.length;
+ if(totalActions===0){document.getElementById('rateText').textContent='暂无打卡（完成 0 次）';document.getElementById('rateBar').style.width='0%';}
+ else{var rate=Math.round(doneForProf/totalActions*100);document.getElementById('rateText').textContent=rate+'%（完成 '+doneForProf+' 次）';document.getElementById('rateBar').style.width=rate+'%';}
+ var container=document.getElementById('taskList');container.innerHTML='';
+ var list=state.tasks.filter(visible).filter(inView).slice().sort(function(a,b){return (a.due+a.time).localeCompare(b.due+b.time)});
+ if(!list.length){var p=document.createElement('p');p.textContent=viewMode!=='all'?'这个视图下暂时没有事项。':'这个人暂时没有事项，去下面新建一条。';container.appendChild(p);}
+ list.forEach(function(t){
+   var row=document.createElement('div');row.className='task'+(editingId===t.id?' editing':'');
+   var chk=document.createElement('button');chk.className='check'+(t.done?' done':'');chk.textContent=t.done?'✓':'';chk.setAttribute('aria-label','完成 '+t.t);
+   chk.addEventListener('click',function(){completeTask(t.id)});
+   var main=document.createElement('div');main.className='task-main';
+   var title=document.createElement('div');title.className='task-title'+(t.done?' done':'');title.textContent=t.t+(t.flag?' ⚑':'');
+   var meta=document.createElement('div');meta.className='meta';
+   [[esc(t.due)+' '+esc(t.time),'' ],[repeatText(t),''],[ownerName(t.owner),''],['没做到扣 '+num(t.pen,0,0,20)+' 分 · '+(DIFF_LABEL[String(t.diff)]||'一般'),'red']].forEach(function(pair){var s=document.createElement('span');s.className='tag'+(pair[1]?' '+pair[1]:'');s.textContent=pair[0].replace(/&[^;]+;/g,function(m){return m});s.innerHTML=pair[0];if(pair[1]!=='red'){s.textContent=s.textContent}meta.appendChild(s)});
+   // rebuild tags safely with textContent only
+   meta.innerHTML='';
+   [t.due+' '+t.time,repeatText(t),ownerName(t.owner),'没做到扣 '+num(t.pen,0,0,20)+' 分 · '+(DIFF_LABEL[String(t.diff)]||'一般')].forEach(function(txt,i){var s=document.createElement('span');s.className='tag'+(i===3?' red':'');s.textContent=txt;meta.appendChild(s)});
+   if(t.note){var ns=document.createElement('span');ns.className='tag';ns.textContent=t.note;meta.appendChild(ns)}
+   main.appendChild(title);main.appendChild(meta);
+   var acts=document.createElement('div');acts.className='task-actions';
+   var miss=document.createElement('button');miss.className='btn danger small';miss.textContent='没做到';miss.addEventListener('click',function(){missTask(t.id)});
+   var edit=document.createElement('button');edit.className='btn ghost small';edit.textContent='编辑';edit.setAttribute('aria-label','编辑 '+t.t);edit.addEventListener('click',function(){startEdit(t.id)});
+   acts.appendChild(miss);acts.appendChild(edit);
+   row.appendChild(chk);row.appendChild(main);row.appendChild(acts);container.appendChild(row);
+ });
+ var chart=document.getElementById('chart');chart.innerHTML='';
+ for(var i=6;i>=0;i--){var dd=new Date(TODAY+'T12:00:00');dd.setDate(dd.getDate()-i);var ds=fmt(dd);var v=profLogs.filter(function(l){return l.date===ds}).reduce(function(s,l){return s+num(l.pen,0,0,20)},0);var cell=document.createElement('div');var bar=document.createElement('i');bar.style.height=Math.min(70,Math.max(4,v*6))+'px';var lab=document.createElement('span');lab.textContent=(dd.getMonth()+1)+'/'+dd.getDate();var lab2=document.createElement('span');lab2.textContent='-'+v;cell.appendChild(bar);cell.appendChild(lab);cell.appendChild(document.createElement('br'));cell.appendChild(lab2);chart.appendChild(cell)}
+ var logBox=document.getElementById('logList');logBox.innerHTML='';
+ if(!profLogs.length){var lp=document.createElement('p');lp.textContent='还没有扣分记录。';logBox.appendChild(lp);}
+ else{profLogs.slice().reverse().slice(0,12).forEach(function(l){var d=document.createElement('div');d.textContent='−'+num(l.pen,0,0,20)+' 分 · '+l.title+' ';var sub=document.createElement('span');sub.style.color='var(--sub)';sub.textContent=l.date+' · '+(l.op==='kid'?'孩子':'我')+' · '+l.reason;d.appendChild(sub);logBox.appendChild(d)})}
+ save();
+}
+function currentOp(){return state.filter==='kid'?'kid':'me'}
+function taskOp(t){return t.owner==='me'||t.owner==='kid'?t.owner:currentOp()}
+function completeTask(id){var t=state.tasks.find(function(x){return x.id===id});if(!t||t.done)return;state.doneCount++;if(!state.doneBy)state.doneBy={me:0,kid:0};var op=taskOp(t);state.doneBy[op]=num(state.doneBy[op],0,0,1e9)+1;var nd=nextDate(t,t.due);if(nd){t.due=nd}else{t.done=true}render()}
+function missTask(id){var t=state.tasks.find(function(x){return x.id===id});if(!t)return;state.logs.push({date:TODAY,title:t.t,pen:num(t.pen,0,0,20),op:taskOp(t),who:t.owner,reason:'手动标记没做到'});var nd=nextDate(t,t.due);if(nd){t.due=nd}else{t.done=true}render()}
+var picked=[];var weekNames=['日','一','二','三','四','五','六'];var weekBtns=[];
+var wp=document.getElementById('weekPicker');weekNames.forEach(function(n,i){var b=document.createElement('button');b.type='button';b.textContent=n;b.addEventListener('click',function(){var ix=picked.indexOf(i);if(ix>-1){picked.splice(ix,1);b.classList.remove('on')}else{picked.push(i);b.classList.add('on')}});wp.appendChild(b);weekBtns.push(b)});
+function setPicked(arr){picked=(arr||[]).slice();weekBtns.forEach(function(b,i){b.classList.toggle('on',picked.indexOf(i)>-1)})}
+function ensureOption(sel,val){var s=String(val);for(var i=0;i<sel.options.length;i++){if(sel.options[i].value===s)return}var o=document.createElement('option');o.value=s;o.textContent=s;o.setAttribute('data-temp','1');sel.appendChild(o)}
+function clearTempOptions(sel){for(var i=sel.options.length-1;i>=0;i--){if(sel.options[i].getAttribute('data-temp'))sel.removeChild(sel.options[i])}}
+document.getElementById('fDiff').addEventListener('change',function(e){document.getElementById('fPenalty').value=e.target.value});
+document.getElementById('fDate').value=TODAY;
+function addTask(){
+ var title=document.getElementById('fTitle').value.trim();if(!title){document.getElementById('addMsg').textContent='先填标题。';return}
+ var repeat=document.getElementById('fRepeat').value;
+ if(repeat==='weekdays'&&picked.length===0){document.getElementById('addMsg').textContent='选了「指定星期」要至少点亮一天，例如周二、周三、周五。';return}
+ var due=document.getElementById('fDate').value||TODAY;
+ var t=cleanTask({id:++state.seq,t:title,owner:document.getElementById('fOwner').value,due:due,time:document.getElementById('fTime').value||'09:00',repeat:repeat,interval:+document.getElementById('fInterval').value,weekdays:picked.slice(),anchorDay:new Date(due+'T12:00:00').getDate(),pen:+document.getElementById('fPenalty').value||5,diff:+document.getElementById('fDiff').value,flag:document.getElementById('fFlag').value==='1'?1:0,note:document.getElementById('fNote').value.trim(),done:false},state.seq);
+ state.tasks.push(t);document.getElementById('fTitle').value='';document.getElementById('addMsg').textContent='已添加：'+title+'（'+repeatText(t)+'）。记得推送到 GitHub 同步。';render();
+}
+var editingId=null;var deleteArmed=false;
+function setFormMode(editing){
+ document.getElementById('formTitle').textContent=editing?'✏️ 编辑事项':'＋ 新建事项';
+ document.getElementById('btnAdd').textContent=editing?'保存修改':'添加事项';
+ document.getElementById('btnCancelEdit').style.display=editing?'':'none';
+ document.getElementById('btnDeleteTask').style.display=editing?'':'none';
+ deleteArmed=false;document.getElementById('btnDeleteTask').textContent='删除这条事项';
+}
+function resetForm(){
+ editingId=null;setFormMode(false);
+ document.getElementById('fTitle').value='';document.getElementById('fNote').value='';
+ document.getElementById('fOwner').value=state.filter==='kid'?'kid':'me';
+ var diffSel=document.getElementById('fDiff');clearTempOptions(diffSel);diffSel.value='5';
+ document.getElementById('fPenalty').value='5';
+ document.getElementById('fDate').value=TODAY;document.getElementById('fTime').value='09:00';
+ document.getElementById('fRepeat').value='none';
+ var ivSel=document.getElementById('fInterval');clearTempOptions(ivSel);ivSel.value='10';
+ document.getElementById('fFlag').value='0';setPicked([]);
+}
+function startEdit(id){
+ var t=state.tasks.find(function(x){return x.id===id});if(!t)return;
+ editingId=id;setFormMode(true);
+ document.getElementById('fTitle').value=t.t;
+ document.getElementById('fOwner').value=t.owner;
+ var diffSel=document.getElementById('fDiff');clearTempOptions(diffSel);ensureOption(diffSel,t.diff);diffSel.value=String(t.diff);
+ document.getElementById('fPenalty').value=num(t.pen,5,0,20);
+ document.getElementById('fDate').value=t.due;
+ document.getElementById('fTime').value=t.time;
+ document.getElementById('fRepeat').value=t.repeat;
+ var ivSel=document.getElementById('fInterval');clearTempOptions(ivSel);ensureOption(ivSel,num(t.interval,1,1,365));ivSel.value=String(num(t.interval,1,1,365));
+ document.getElementById('fFlag').value=t.flag?'1':'0';
+ document.getElementById('fNote').value=t.note||'';
+ setPicked(t.weekdays||[]);
+ document.getElementById('addMsg').textContent='正在编辑：'+t.t+'。改完点「保存修改」；不要了点「取消编辑」。';
+ render();
+ document.getElementById('formCard').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function saveEdit(){
+ var t=state.tasks.find(function(x){return x.id===editingId});if(!t){resetForm();render();return}
+ var title=document.getElementById('fTitle').value.trim();if(!title){document.getElementById('addMsg').textContent='先填标题。';return}
+ var repeat=document.getElementById('fRepeat').value;
+ if(repeat==='weekdays'&&picked.length===0){document.getElementById('addMsg').textContent='选了「指定星期」要至少点亮一天，例如周二、周三、周五。';return}
+ var due=document.getElementById('fDate').value||TODAY;
+ var pv=document.getElementById('fPenalty').value;
+ var nt=cleanTask({id:t.id,t:title,owner:document.getElementById('fOwner').value,due:due,time:document.getElementById('fTime').value||'09:00',repeat:repeat,interval:+document.getElementById('fInterval').value||t.interval,weekdays:picked.slice(),anchorDay:new Date(due+'T12:00:00').getDate(),pen:pv===''||pv==null?t.pen:+pv,diff:+document.getElementById('fDiff').value||t.diff,flag:document.getElementById('fFlag').value==='1'?1:0,note:document.getElementById('fNote').value.trim(),done:t.done},0);
+ if(!nt)return;
+ t.t=nt.t;t.owner=nt.owner;t.due=nt.due;t.time=nt.time;t.repeat=nt.repeat;t.interval=nt.interval;t.weekdays=nt.weekdays;t.anchorDay=nt.anchorDay;t.pen=nt.pen;t.diff=nt.diff;t.flag=nt.flag;t.note=nt.note;
+ resetForm();
+ document.getElementById('addMsg').textContent='已保存修改：'+title+'（'+repeatText(t)+'）。记得推送到 GitHub 同步。';
+ render();
+}
+function deleteEditing(){
+ var t=state.tasks.find(function(x){return x.id===editingId});if(!t)return;
+ if(!deleteArmed){deleteArmed=true;document.getElementById('btnDeleteTask').textContent='再点一次确认删除';document.getElementById('addMsg').textContent='确认要删除「'+t.t+'」吗？删除后这条事项就没了（已产生的扣分记录会保留）。再点一次「删除这条事项」确认，或点「取消编辑」放弃。';return}
+ state.tasks=state.tasks.filter(function(x){return x.id!==editingId});
+ var name=t.t;resetForm();
+ document.getElementById('addMsg').textContent='已删除：'+name+'。记得推送到 GitHub 同步。';
+ render();
+}
+document.getElementById('btnAdd').addEventListener('click',function(){if(editingId!=null)saveEdit();else addTask()});
+document.getElementById('btnCancelEdit').addEventListener('click',function(){resetForm();document.getElementById('addMsg').textContent='已取消编辑，没有改动。';render()});
+document.getElementById('btnDeleteTask').addEventListener('click',deleteEditing);
+function setFilter(f){state.filter=f;document.querySelectorAll('#userSeg button').forEach(function(x){x.classList.toggle('on',x.getAttribute('data-u')===f)})}
+document.querySelectorAll('#userSeg button').forEach(function(b){b.addEventListener('click',function(){setFilter(b.getAttribute('data-u'));viewMode='all';render()})});
+function showPage(name){
+ document.getElementById('pageMain').style.display=name==='main'?'':'none';
+ document.getElementById('pageHelp').style.display=name==='help'?'':'none';
+ document.querySelectorAll('#pageTabs button').forEach(function(x){x.classList.toggle('on',x.getAttribute('data-p')===name)});
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('#pageTabs button').forEach(function(b){b.addEventListener('click',function(){showPage(b.getAttribute('data-p'))})});
+document.querySelectorAll('.stat[data-view]').forEach(function(el){el.addEventListener('click',function(){
+ var v=el.getAttribute('data-view');var p=el.getAttribute('data-person');
+ var samePerson=state.filter===p;
+ if(p)setFilter(p);
+ viewMode=(samePerson&&viewMode===v)?'all':v;
+ render();
+ document.getElementById('listCard').scrollIntoView({behavior:'smooth',block:'start'});
+})});
+function payload(){return JSON.stringify({version:3,exportedAt:new Date().toISOString(),tasks:state.tasks,logs:state.logs,doneCount:state.doneCount,doneBy:state.doneBy||{me:0,kid:0},seq:state.seq},null,2)}
+document.getElementById('btnExport').addEventListener('click',function(){var blob=new Blob([payload()],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='data.json';a.click()});
+document.getElementById('fileImport').addEventListener('change',function(ev){var f=ev.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){try{var cd=cleanData(JSON.parse(r.result));if(!cd)throw new Error('bad');state.tasks=cd.tasks;state.logs=cd.logs;state.doneCount=cd.doneCount;state.doneBy=cd.doneBy;state.seq=cd.seq;render();document.getElementById('addMsg').textContent='导入成功，共 '+state.tasks.length+' 条。记得推送到 GitHub 同步给孩子。';}catch(e){document.getElementById('addMsg').textContent='导入失败：文件不是有效的 JSON 数据。'}};r.readAsText(f)});
+function b64Encode(str){return btoa(unescape(encodeURIComponent(str)))}
+function b64Decode(b){return decodeURIComponent(escape(atob(String(b||'').replace(/\s/g,''))))}
+/* ---- GitHub sync: config + token live only in this device's local storage, never in code ---- */
+var GH_KEY='reminders-gh-config-v1';
+function ghConfig(){
+ return {repo:document.getElementById('ghRepo').value.trim(),path:document.getElementById('ghPath').value.trim()||'data.json',branch:document.getElementById('ghBranch').value.trim()||'main',codeRepo:document.getElementById('ghCodeRepo').value.trim(),token:document.getElementById('ghToken').value.trim()};
+}
+function ghSaveConfig(){try{var c=ghConfig();localStorage.setItem(GH_KEY,JSON.stringify(c));}catch(e){} ghHint()}
+function ghLoadConfig(){try{var raw=localStorage.getItem(GH_KEY);if(!raw)return;var c=JSON.parse(raw);if(c.repo)document.getElementById('ghRepo').value=c.repo;if(c.path)document.getElementById('ghPath').value=c.path;if(c.branch)document.getElementById('ghBranch').value=c.branch;if(c.codeRepo)document.getElementById('ghCodeRepo').value=c.codeRepo;if(c.token)document.getElementById('ghToken').value=c.token;}catch(e){} ghHint()}
+function ghHint(){var c=ghConfig();var el=document.getElementById('ghPagesHint');if(c.codeRepo&&c.codeRepo.indexOf('/')>-1){var parts=c.codeRepo.split('/');el.textContent='Pages 网址应为：https://'+parts[0]+'.github.io/'+parts[1]+'/ （在代码仓库 Settings → Pages 里开启后生效）';}else{el.textContent='';}}
+['ghRepo','ghPath','ghBranch','ghCodeRepo','ghToken'].forEach(function(id){document.getElementById(id).addEventListener('change',ghSaveConfig);document.getElementById(id).addEventListener('blur',ghSaveConfig)});
+document.getElementById('btnClearToken').addEventListener('click',function(){document.getElementById('ghToken').value='';ghSaveConfig();document.getElementById('ghMsg').textContent='状态：已清除这台设备本地保存的令牌。GitHub 上的数据没有被删除。';});
+function ghParts(){var c=ghConfig();var p=c.repo.split('/');return{owner:p[0]||'',repo:p[1]||'',path:c.path.replace(/^\/+/,''),branch:c.branch,token:c.token}}
+function ghHeaders(token){return {'Authorization':'Bearer '+token,'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'}}
+function ghUrl(g){return 'https://api.github.com/repos/'+encodeURIComponent(g.owner)+'/'+encodeURIComponent(g.repo)+'/contents/'+g.path.split('/').map(encodeURIComponent).join('/')}
+async function pushGitHub(){
+ var g=ghParts();var msg=document.getElementById('ghMsg');ghSaveConfig();
+ if(!g.owner||!g.repo||!g.token){msg.textContent='状态：请先填数据仓库（用户名/私有仓库名）和令牌。';return}
+ msg.textContent='状态：正在推送到 GitHub…';
+ try{
+   var getRes=await fetch(ghUrl(g)+'?ref='+encodeURIComponent(g.branch),{headers:ghHeaders(g.token)});
+   var sha=null;
+   if(getRes.ok){var j=await getRes.json();sha=j.sha;}
+   else if(getRes.status!==404){var gt=await getRes.text();throw new Error('读取现有文件失败，GitHub 返回 '+getRes.status+' '+gt.slice(0,160))}
+   var body={message:'更新提醒事项打卡数据 '+new Date().toISOString(),content:b64Encode(payload()),branch:g.branch};
+   if(sha)body.sha=sha;
+   var res=await fetch(ghUrl(g),{method:'PUT',headers:ghHeaders(g.token),body:JSON.stringify(body)});
+   if(!res.ok){var txt=await res.text();throw new Error('GitHub 返回 '+res.status+' '+txt.slice(0,180))}
+   msg.textContent='状态：✅ 已存到 GitHub 私有仓库 '+g.owner+'/'+g.repo+' 的 '+g.path+'（分支 '+g.branch+'）。孩子那边打开同一 Pages 网址、填同一数据仓库后点「从 GitHub 拉取」就能同步。';
+ }catch(e){msg.textContent='状态：推送失败 — '+e.message+'。常见原因：令牌没给该私有仓库 Contents 读写权限、仓库名/分支写错（新仓库默认分支可能是 main）、或令牌已过期。请检查后重试，或先用导出 JSON 备份。';}
+}
+async function pullGitHub(){
+ var g=ghParts();var msg=document.getElementById('ghMsg');ghSaveConfig();
+ if(!g.owner||!g.repo||!g.token){msg.textContent='状态：请先填数据仓库和令牌再拉取。';return}
+ msg.textContent='状态：正在从 GitHub 拉取…';
+ try{
+   var res=await fetch(ghUrl(g)+'?ref='+encodeURIComponent(g.branch),{headers:ghHeaders(g.token)});
+   if(!res.ok)throw new Error('GitHub 返回 '+res.status+'（404 通常是还没推送过、或路径/分支不对）');
+   var j=await res.json();var cd=cleanData(JSON.parse(b64Decode(j.content)));
+   if(!cd)throw new Error('data.json 内容不是有效的打卡数据');
+   state.tasks=cd.tasks;state.logs=cd.logs;state.doneCount=cd.doneCount;state.doneBy=cd.doneBy;state.seq=cd.seq;render();
+   msg.textContent='状态：✅ 拉取成功，共 '+state.tasks.length+' 条事项，已显示私有仓库里的最新云端数据。';
+ }catch(e){msg.textContent='状态：拉取失败 — '+e.message;}
+}
+document.getElementById('btnPush').addEventListener('click',pushGitHub);
+document.getElementById('btnPull').addEventListener('click',pullGitHub);
+document.getElementById('btnDownload').addEventListener('click',function(){var blob=new Blob(['<!doctype html>\n'+document.documentElement.outerHTML],{type:'text/html'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='index.html';a.click()});
+document.getElementById('btnCopySteps').addEventListener('click',function(){var txt='GitHub 操作步骤：1) 新建 Public 仓库 reminders-web，放 index.html，Settings→Pages 选 main 分支开启，网址是 https://用户名.github.io/reminders-web/ ；2) 新建 Private 仓库 reminders-data，数据文件 data.json 由网页第一次推送时自动创建；3) Settings→Developer settings→Fine-grained tokens，只选 reminders-data，Contents 读写，生成令牌；4) 你和孩子在各自设备打开 Pages 网址，各自填同一数据仓库+各自令牌（令牌只存本机，不进代码）；5) 改完点推送，另一台先拉取再打卡。';if(navigator.clipboard)navigator.clipboard.writeText(txt);document.getElementById('ghMsg').textContent='状态：步骤已复制，可粘贴发给孩子照着做。';});
+ghLoadConfig();
+render();
+</script>
+</body>
+</html>
