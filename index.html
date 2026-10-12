@@ -443,13 +443,36 @@ async function ghFetchRemote(g){
  if(!cd)throw new Error('data.json 内容不是有效的打卡数据');
  return {sha:j.sha,cd:cd};
 }
-async function doPush(g,sha){
+async function doPush(g,sha,manual){
+ for(var attempt=0;attempt<2;attempt++){
  var body={message:'更新提醒事项打卡数据 '+new Date().toISOString(),content:b64Encode(payload()),branch:g.branch};
  if(sha)body.sha=sha;
  var res=await fetch(ghUrl(g),{method:'PUT',headers:ghHeaders(g.token),body:JSON.stringify(body)});
- if(!res.ok){var txt=await res.text();throw new Error('GitHub 返回 '+res.status+' '+txt.slice(0,160))}
+ if(res.ok){
  var newSha=sha;try{var j=await res.json();if(j&&j.content&&j.content.sha)newSha=j.content.sha;}catch(e){}
  syncState.sha=newSha;syncState.dirty=false;syncState.at=Date.now();save();
+ return;
+ }
+ var txt=await res.text();
+ if(res.status===409&&attempt===0){
+   /* 409 多半是紧接着的前一次推送刚成功、版本号已被更新：先回读云端比对内容 */
+   var r2=null;try{r2=await ghFetchRemote(g);}catch(e2){}
+   if(r2&&fingerprint(r2.cd)===fingerprint(state)){
+     /* 云端内容与本机完全一致，说明修改其实已经存进去了，直接按同步成功处理 */
+     syncState.sha=r2.sha;syncState.dirty=false;syncState.at=Date.now();save();
+     return;
+   }
+   if(r2&&manual){
+     /* 手动推送是用户明确选择用本机覆盖云端：换最新版本号重试一次 */
+     sha=r2.sha;continue;
+   }
+   if(r2){
+     /* 自动同步遇到云端有不同的新内容：不覆盖，交回冲突处理 */
+     throw new Error('冲突：云端刚被更新过且内容与本机不同，自动同步已暂停以免覆盖');
+   }
+ }
+ throw new Error('GitHub 返回 '+res.status+' '+txt.slice(0,160));
+ }
 }
 function adoptRemote(r){
  state.tasks=r.cd.tasks;state.logs=r.cd.logs;state.doneCount=r.cd.doneCount;state.doneBy=r.cd.doneBy;state.seq=Math.max(state.seq,r.cd.seq);
@@ -478,7 +501,10 @@ async function autoCheck(){
    }else{
      setSync('conflict','云端和本机都有新修改，自动同步已暂停 — 去「说明与同步」点「拉取」用云端覆盖本机，或点「推送」用本机覆盖云端');
    }
- }catch(e){setSync('error','自动同步失败 — '+e.message+'。网络恢复后会自动重试，也可去「说明与同步」手动推送 / 拉取。');}
+ }catch(e){
+   if(String(e.message||'').indexOf('冲突：')===0){setSync('conflict',e.message+' — 去「说明与同步」点「拉取」用云端覆盖本机，或点「推送」用本机覆盖云端');}
+   else setSync('error','自动同步失败 — '+e.message+'。网络恢复后会自动重试，也可去「说明与同步」手动推送 / 拉取。');
+ }
  busySync=false;
 }
 async function pushGitHub(){
@@ -488,7 +514,7 @@ async function pushGitHub(){
  busySync=true;setSync('syncing','正在推送到 GitHub…');
  try{
    var r=await ghFetchRemote(g);
-   await doPush(g,r?r.sha:null);
+   await doPush(g,r?r.sha:null,true);
    setSync('ok','✅ 已存到 GitHub 私有仓库 '+g.owner+'/'+g.repo+' 的 '+g.path+'（分支 '+g.branch+'）· '+timeStr(Date.now()));
  }catch(e){setSync('error','推送失败 — '+e.message+'。常见原因：令牌没给该私有仓库 Contents 读写权限、仓库名/分支写错（新仓库默认分支可能是 main）、或令牌已过期。请检查后重试，或先用导出 JSON 备份。');}
  busySync=false;
