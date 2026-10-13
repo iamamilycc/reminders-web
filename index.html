@@ -105,6 +105,7 @@ code{background:#f2f2f7;padding:2px 5px;border-radius:6px;font-size:12px;word-br
     <div>
       <div class="card" id="listCard">
         <div class="flex" style="justify-content:space-between"><h2 id="listTitle">我的列表 · 提醒</h2><span class="tag" id="filterLabel">显示：我</span></div>
+        <p>扣分制：只点「没做到」才扣分，没点的就算当天做到了。循环事项没点「没做到」的，跨天自动滚到下一次，不扣分、也不再以逾期留在「今天」和「全部未完成」里；一次性事项是真待办，没处理完会继续留在「今天」和「全部未完成」里提醒。</p>
         <div id="taskList"></div>
       </div>
 
@@ -161,7 +162,7 @@ code{background:#f2f2f7;padding:2px 5px;border-radius:6px;font-size:12px;word-br
 
   <div class="card" style="margin-top:16px">
     <h2>📖 使用说明</h2>
-    <p>点圆圈 = 完成，循环事项会自动生成下一次；点「没做到」= 按难度扣分并进入下一次。难度定分：非常简单 2 分 · 简单 3 分 · 一般 5 分 · 较难 8 分 · 非常难 12 分，可单独改。点每条事项右边的「编辑」，可以改它的标题、归属、日期时间、循环和扣分，也能在编辑区里删除这条（删除要点两次确认）；改完会自动同步到云端。点顶部「我 / 孩子」，页面只显示那个人的卡片和提醒事项，另一个人的完全不出现；选「全部」才同时显示两组卡片。卡片数字只算当前这个人的事项（共用事项两边都算）；点卡片里的「今天 / 计划 / 全部未完成 / 旗标」，列表只看那一类，再点一次同一张卡片回到那个人的全部。全部事项保存在私有数据仓库中：在「说明与同步」页填好一次令牌后，打开页面会自动拉取最新数据，任何改动（打卡、新建、编辑、删除）都会自动推送到云端；另一台设备打开页面、或切回页面时，也会自动拿到最新数据。若两台设备同时改了同一批数据、出现冲突提示，按页面右上角同步状态的提示，去「说明与同步」页手动点一次「拉取」或「推送」决定以哪边为准即可。</p>
+    <p>点圆圈 = 完成，循环事项会自动生成下一次；点「没做到」= 按难度扣分并进入下一次。没点「没做到」的就算当天做到了：循环事项（每天 / 每周 / 指定星期 / 每月 / 每隔 N 天）跨天会自动滚到下一次出现，不扣分，也不会以逾期形式留在「今天」和「全部未完成」里（每天的事项滚到今天时，是今天新一次的，不是昨天的逾期）；一次性事项（不重复）是真待办，不适用自动滚动，到期没处理完会继续留在「今天」和「全部未完成」里提醒，直到点完成、点「没做到」或改期。难度定分：非常简单 2 分 · 简单 3 分 · 一般 5 分 · 较难 8 分 · 非常难 12 分，可单独改。点每条事项右边的「编辑」，可以改它的标题、归属、日期时间、循环和扣分，也能在编辑区里删除这条（删除要点两次确认）；改完会自动同步到云端。点顶部「我 / 孩子」，页面只显示那个人的卡片和提醒事项，另一个人的完全不出现；选「全部」才同时显示两组卡片。卡片数字只算当前这个人的事项（共用事项两边都算）；点卡片里的「今天 / 计划 / 全部未完成 / 旗标」，列表只看那一类，再点一次同一张卡片回到那个人的全部。全部事项保存在私有数据仓库中：在「说明与同步」页填好一次令牌后，打开页面会自动拉取最新数据，任何改动（打卡、新建、编辑、删除）都会自动推送到云端；另一台设备打开页面、或切回页面时，也会自动拿到最新数据。若两台设备同时改了同一批数据、出现冲突提示，按页面右上角同步状态的提示，去「说明与同步」页手动点一次「拉取」或「推送」决定以哪边为准即可。</p>
   </div>
 
       <div class="card" id="github">
@@ -240,6 +241,30 @@ function nextDate(t,fromStr){
  if(t.repeat==='weekdays'&&t.weekdays&&t.weekdays.length){for(var i=1;i<=14;i++){var c=new Date(dt);c.setDate(dt.getDate()+i);if(t.weekdays.indexOf(c.getDay())>-1)return fmt(c)}}
  return null;
 }
+function rolloverOverdue(){
+ var now=todayStr();if(now!==TODAY)TODAY=now;
+ var changed=false;
+ if(!state.doneBy)state.doneBy={me:0,kid:0};
+ state.tasks.forEach(function(t){
+   if(t.done||!(t.due<TODAY))return;
+   /* 只滚循环事项：一次性事项是真待办，到期未处理继续留在今天/全部未完成里提醒，绝不自动清掉 */
+   var isRecurring=t.repeat&&t.repeat!=='none';
+   if(!isRecurring)return;
+   var guard=0;
+   while(!t.done&&t.due<TODAY&&guard<500){
+     guard++;
+     state.doneCount++;
+     if(t.owner==='kid'){state.doneBy.kid=num(state.doneBy.kid,0,0,1e9)+1}
+     else if(t.owner==='me'){state.doneBy.me=num(state.doneBy.me,0,0,1e9)+1}
+     else{state.doneBy.kid=num(state.doneBy.kid,0,0,1e9)+1;state.doneBy.me=num(state.doneBy.me,0,0,1e9)+1}
+     var nd=nextDate(t,t.due);
+     if(nd&&nd!==t.due){t.due=nd}else{t.done=true}
+     changed=true;
+   }
+ });
+ if(changed){syncState.dirty=true;try{scheduleAutoPush()}catch(e){}}
+ return changed;
+}
 function visible(t){if(state.filter==='all')return true;return t.owner===state.filter||t.owner==='shared'}
 var viewMode='all';
 function inView(t){
@@ -250,6 +275,7 @@ function inView(t){
  return true;
 }
 function render(){
+ rolloverOverdue();
  var cm=document.getElementById('cardsMe');if(cm)cm.style.display=state.filter==='kid'?'none':'';
  var ck=document.getElementById('cardsKid');if(ck)ck.style.display=state.filter==='me'?'none':'';
  var pm=document.getElementById('pillMe');if(pm)pm.style.display=state.filter==='kid'?'none':'';
@@ -443,36 +469,13 @@ async function ghFetchRemote(g){
  if(!cd)throw new Error('data.json 内容不是有效的打卡数据');
  return {sha:j.sha,cd:cd};
 }
-async function doPush(g,sha,manual){
- for(var attempt=0;attempt<2;attempt++){
+async function doPush(g,sha){
  var body={message:'更新提醒事项打卡数据 '+new Date().toISOString(),content:b64Encode(payload()),branch:g.branch};
  if(sha)body.sha=sha;
  var res=await fetch(ghUrl(g),{method:'PUT',headers:ghHeaders(g.token),body:JSON.stringify(body)});
- if(res.ok){
+ if(!res.ok){var txt=await res.text();throw new Error('GitHub 返回 '+res.status+' '+txt.slice(0,160))}
  var newSha=sha;try{var j=await res.json();if(j&&j.content&&j.content.sha)newSha=j.content.sha;}catch(e){}
  syncState.sha=newSha;syncState.dirty=false;syncState.at=Date.now();save();
- return;
- }
- var txt=await res.text();
- if(res.status===409&&attempt===0){
-   /* 409 多半是紧接着的前一次推送刚成功、版本号已被更新：先回读云端比对内容 */
-   var r2=null;try{r2=await ghFetchRemote(g);}catch(e2){}
-   if(r2&&fingerprint(r2.cd)===fingerprint(state)){
-     /* 云端内容与本机完全一致，说明修改其实已经存进去了，直接按同步成功处理 */
-     syncState.sha=r2.sha;syncState.dirty=false;syncState.at=Date.now();save();
-     return;
-   }
-   if(r2&&manual){
-     /* 手动推送是用户明确选择用本机覆盖云端：换最新版本号重试一次 */
-     sha=r2.sha;continue;
-   }
-   if(r2){
-     /* 自动同步遇到云端有不同的新内容：不覆盖，交回冲突处理 */
-     throw new Error('冲突：云端刚被更新过且内容与本机不同，自动同步已暂停以免覆盖');
-   }
- }
- throw new Error('GitHub 返回 '+res.status+' '+txt.slice(0,160));
- }
 }
 function adoptRemote(r){
  state.tasks=r.cd.tasks;state.logs=r.cd.logs;state.doneCount=r.cd.doneCount;state.doneBy=r.cd.doneBy;state.seq=Math.max(state.seq,r.cd.seq);
@@ -501,10 +504,7 @@ async function autoCheck(){
    }else{
      setSync('conflict','云端和本机都有新修改，自动同步已暂停 — 去「说明与同步」点「拉取」用云端覆盖本机，或点「推送」用本机覆盖云端');
    }
- }catch(e){
-   if(String(e.message||'').indexOf('冲突：')===0){setSync('conflict',e.message+' — 去「说明与同步」点「拉取」用云端覆盖本机，或点「推送」用本机覆盖云端');}
-   else setSync('error','自动同步失败 — '+e.message+'。网络恢复后会自动重试，也可去「说明与同步」手动推送 / 拉取。');
- }
+ }catch(e){setSync('error','自动同步失败 — '+e.message+'。网络恢复后会自动重试，也可去「说明与同步」手动推送 / 拉取。');}
  busySync=false;
 }
 async function pushGitHub(){
@@ -514,7 +514,7 @@ async function pushGitHub(){
  busySync=true;setSync('syncing','正在推送到 GitHub…');
  try{
    var r=await ghFetchRemote(g);
-   await doPush(g,r?r.sha:null,true);
+   await doPush(g,r?r.sha:null);
    setSync('ok','✅ 已存到 GitHub 私有仓库 '+g.owner+'/'+g.repo+' 的 '+g.path+'（分支 '+g.branch+'）· '+timeStr(Date.now()));
  }catch(e){setSync('error','推送失败 — '+e.message+'。常见原因：令牌没给该私有仓库 Contents 读写权限、仓库名/分支写错（新仓库默认分支可能是 main）、或令牌已过期。请检查后重试，或先用导出 JSON 备份。');}
  busySync=false;
@@ -541,8 +541,8 @@ ghLoadConfig();
 syncLabel();
 render();
 autoCheck();
-document.addEventListener('visibilitychange',function(){if(!document.hidden)autoCheck()});
-setInterval(function(){if(!document.hidden)autoCheck()},90000);
+document.addEventListener('visibilitychange',function(){if(!document.hidden){var _now=todayStr();if(_now!==TODAY){rolloverOverdue();render()}autoCheck()}});
+setInterval(function(){var _now=todayStr();if(_now!==TODAY){rolloverOverdue();render()}if(!document.hidden)autoCheck()},60000);
 </script>
 </body>
 </html>
