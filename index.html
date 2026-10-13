@@ -74,7 +74,7 @@ code{background:#f2f2f7;padding:2px 5px;border-radius:6px;font-size:12px;word-br
     </div>
     <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
       <div class="seg" id="userSeg"><button data-u="me" class="on">👤 我</button><button data-u="kid">🧒 孩子</button><button data-u="all">全部</button></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="pill" id="pillMe">我的分数 <span id="scoreMe">100</span></span><span class="pill" id="pillKid">孩子分数 <span id="scoreKid">100</span></span></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="pill" id="pillMe">我的分数 <span id="scoreMe">100</span> · 累计扣分 <span id="cumMe">0</span> 分</span><span class="pill" id="pillKid">孩子分数 <span id="scoreKid">100</span> · 累计扣分 <span id="cumKid">0</span> 分</span></div>
       <span class="pill" id="syncPill" style="font-size:12px;font-weight:600">☁️ 同步：…</span>
     </div>
   </div>
@@ -297,6 +297,8 @@ function render(){
  var kidPen=state.logs.filter(function(l){return l.op==='kid'}).reduce(function(s,l){return s+num(l.pen,0,0,20)},0);
  document.getElementById('scoreMe').textContent=Math.max(0,100-mePen);
  document.getElementById('scoreKid').textContent=Math.max(0,100-kidPen);
+ document.getElementById('cumMe').textContent=mePen;
+ document.getElementById('cumKid').textContent=kidPen;
  var profLogs=state.logs.filter(function(l){return state.filter==='all'||l.op===state.filter});
  document.getElementById('totalPenalty').textContent=profLogs.reduce(function(s,l){return s+num(l.pen,0,0,20)},0);
  var doneForProf=state.filter==='all'?state.doneCount:num((state.doneBy||{})[state.filter],0,0,1e9);
