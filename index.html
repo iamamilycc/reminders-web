@@ -7,8 +7,8 @@
 <link rel="icon" href="data:,">
 <title>提醒事项打卡 · 网页版</title>
 <style>
-:root{--bg:#f2f2f7;--card:#fff;--card2:#fff;--text:#1c1c1e;--sub:#6e6e73;--line:#e5e5ea;--blue:#007aff;--red:#ff3b30;--orange:#ff9500;--gray:#8e8e93;--radius:18px;--shadow:0 6px 24px rgba(0,0,0,.06)}
-@media(prefers-color-scheme:dark){:root{--bg:#000;--card:#1c1c1e;--card2:#2c2c2e;--text:#f5f5f7;--sub:#aeaeb2;--line:#38383a;--shadow:none}}
+:root{--bg:#f2f2f7;--card:#fff;--card2:#fff;--text:#1c1c1e;--sub:#6e6e73;--line:#e5e5ea;--blue:#007aff;--red:#ff3b30;--orange:#ff9500;--gray:#8e8e93;--green:#1d9e50;--radius:18px;--shadow:0 6px 24px rgba(0,0,0,.06)}
+@media(prefers-color-scheme:dark){:root{--bg:#000;--card:#1c1c1e;--card2:#2c2c2e;--text:#f5f5f7;--sub:#aeaeb2;--line:#38383a;--green:#30d158;--shadow:none}}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue","PingFang SC","Microsoft YaHei",Arial,sans-serif;-webkit-font-smoothing:antialiased}
 a{color:var(--blue);text-decoration:none}
 .wrap{max-width:1120px;margin:0 auto;padding:18px 16px 40px}
@@ -74,7 +74,7 @@ code{background:#f2f2f7;padding:2px 5px;border-radius:6px;font-size:12px;word-br
     </div>
     <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
       <div class="seg" id="userSeg"><button data-u="me" class="on">👤 我</button><button data-u="kid">🧒 孩子</button><button data-u="all">全部</button></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="pill" id="pillMe">我的分数 <span id="scoreMe">100</span> · 累计扣分 <span id="cumMe">0</span> 分</span><span class="pill" id="pillKid">孩子分数 <span id="scoreKid">100</span> · 累计扣分 <span id="cumKid">0</span> 分</span></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="pill" id="pillMe">我的分数 <span id="scoreMe">100</span> · 累计扣分 <span id="cumMe">0</span> 分</span><span class="pill" id="pillKid">孩子分数 <span id="scoreKid">100</span> · 累计扣分 <span id="cumKid">0</span> 分 · 累计加分 <span id="bonusKid">0</span> 分</span></div>
       <span class="pill" id="syncPill" style="font-size:12px;font-weight:600">☁️ 同步：…</span>
     </div>
   </div>
@@ -141,11 +141,45 @@ code{background:#f2f2f7;padding:2px 5px;border-radius:6px;font-size:12px;word-br
         <div class="flex" style="justify-content:space-between"><h2>📊 统计</h2><span class="tag" id="statsLabel">统计：全部</span></div>
         <p>完成率 <strong id="rateText">暂无打卡</strong> · 累计扣分 <strong id="totalPenalty">0</strong> 分</p>
         <div class="bar"><i id="rateBar" style="width:0%"></i></div>
-        <p>每人从 100 分单独算：我的扣分只扣我的分，孩子的只扣孩子的分，共用事项按实际点「没做到」的人扣。</p>
+        <p>每人从 100 分单独算：我的扣分只扣我的分，孩子的只扣孩子的分，共用事项按实际点「没做到」的人扣。孩子的分数还会加上家长的奖励加分（见下方「给孩子加分」），可以超过 100 分。</p>
         <h2 style="margin-top:18px">近 7 天扣分</h2>
         <div class="chart" id="chart"></div>
-        <h2 style="margin-top:18px">扣分记录</h2>
+        <h2 style="margin-top:18px">扣分与加分记录</h2>
         <div class="log" id="logList"></div>
+      </div>
+
+      <div class="card" id="bonusCard">
+        <div class="flex" style="justify-content:space-between"><h2>🎁 给孩子加分</h2><span class="tag">只有家长能操作</span></div>
+        <p>孩子有值得奖励的表现时，在这里临时加分：加多少分、因为什么，都由你当场定。加分只加在孩子的分数上，我的分数不受影响。</p>
+        <div id="bonusLocked">
+          <button class="btn" id="btnBonusOpen" type="button">🔒 输密码给孩子加分</button>
+          <p id="bonusLockHint"></p>
+          <h2 style="margin-top:16px;font-size:15px">加分记录</h2>
+          <div class="log" id="bonusList"></div>
+        </div>
+        <div id="bonusGate" style="display:none">
+          <h2 style="font-size:15px" id="bonusGateTitle">输入密码</h2>
+          <p id="bonusGateDesc"></p>
+          <label>密码</label><input type="password" id="bonusPwd1" autocomplete="off" placeholder="输入密码">
+          <div id="bonusPwd2Row"><label>再输一遍确认</label><input type="password" id="bonusPwd2" autocomplete="off" placeholder="再输一遍新密码"></div>
+          <p id="bonusGateMsg" style="color:var(--red)"></p>
+          <div class="flex" style="margin-top:10px"><button class="btn" id="btnBonusGateOk" type="button">验证并进入</button><button class="btn ghost" id="btnBonusGateCancel" type="button">取消</button></div>
+        </div>
+        <div id="bonusPanel" style="display:none">
+          <label>加分分值（1–100 的整数）</label><input type="number" id="bonusPoints" min="1" max="100" step="1" placeholder="例如 10">
+          <label>事由（必填）</label><input type="text" id="bonusReason" maxlength="100" placeholder="例如：主动帮忙做家务">
+          <p id="bonusMsg"></p>
+          <div class="flex" style="margin-top:10px"><button class="btn" id="btnBonusAdd" type="button">确认加分</button><button class="btn ghost" id="btnBonusLock" type="button">完成，锁定</button></div>
+          <h2 style="margin-top:16px;font-size:15px">加分记录（可删除撤销）</h2>
+          <div class="log" id="bonusListEdit"></div>
+          <details><summary>修改加分密码</summary>
+            <label>旧密码</label><input type="password" id="bonusOldPwd" autocomplete="off">
+            <label>新密码（至少 4 位）</label><input type="password" id="bonusNewPwd1" autocomplete="off">
+            <label>再输一遍新密码</label><input type="password" id="bonusNewPwd2" autocomplete="off">
+            <p id="bonusChangeMsg"></p>
+            <div class="flex" style="margin-top:8px"><button class="btn secondary" id="btnBonusChange" type="button">保存新密码</button></div>
+          </details>
+        </div>
       </div>
     </div>
   </div>
@@ -162,7 +196,7 @@ code{background:#f2f2f7;padding:2px 5px;border-radius:6px;font-size:12px;word-br
 
   <div class="card" style="margin-top:16px">
     <h2>📖 使用说明</h2>
-    <p>点圆圈 = 完成，循环事项会自动生成下一次；点「没做到」= 按难度扣分并进入下一次。没点「没做到」的就算当天做到了：循环事项（每天 / 每周 / 指定星期 / 每月 / 每隔 N 天）跨天会自动滚到下一次出现，不扣分，也不会以逾期形式留在「今天」和「全部未完成」里（每天的事项滚到今天时，是今天新一次的，不是昨天的逾期）；一次性事项（不重复）是真待办，不适用自动滚动，到期没处理完会继续留在「今天」和「全部未完成」里提醒，直到点完成、点「没做到」或改期。难度定分：非常简单 2 分 · 简单 3 分 · 一般 5 分 · 较难 8 分 · 非常难 12 分，可单独改。点每条事项右边的「编辑」，可以改它的标题、归属、日期时间、循环和扣分，也能在编辑区里删除这条（删除要点两次确认）；改完会自动同步到云端。点顶部「我 / 孩子」，页面只显示那个人的卡片和提醒事项，另一个人的完全不出现；选「全部」才同时显示两组卡片。卡片数字只算当前这个人的事项（共用事项两边都算）；点卡片里的「今天 / 计划 / 全部未完成 / 旗标」，列表只看那一类，再点一次同一张卡片回到那个人的全部。全部事项保存在私有数据仓库中：在「说明与同步」页填好一次令牌后，打开页面会自动拉取最新数据，任何改动（打卡、新建、编辑、删除）都会自动推送到云端；另一台设备打开页面、或切回页面时，也会自动拿到最新数据。若两台设备同时改了同一批数据、出现冲突提示，按页面右上角同步状态的提示，去「说明与同步」页手动点一次「拉取」或「推送」决定以哪边为准即可。</p>
+    <p>点圆圈 = 完成，循环事项会自动生成下一次；点「没做到」= 按难度扣分并进入下一次。没点「没做到」的就算当天做到了：循环事项（每天 / 每周 / 指定星期 / 每月 / 每隔 N 天）跨天会自动滚到下一次出现，不扣分，也不会以逾期形式留在「今天」和「全部未完成」里（每天的事项滚到今天时，是今天新一次的，不是昨天的逾期）；一次性事项（不重复）是真待办，不适用自动滚动，到期没处理完会继续留在「今天」和「全部未完成」里提醒，直到点完成、点「没做到」或改期。难度定分：非常简单 2 分 · 简单 3 分 · 一般 5 分 · 较难 8 分 · 非常难 12 分，可单独改。点每条事项右边的「编辑」，可以改它的标题、归属、日期时间、循环和扣分，也能在编辑区里删除这条（删除要点两次确认）；改完会自动同步到云端。点顶部「我 / 孩子」，页面只显示那个人的卡片和提醒事项，另一个人的完全不出现；选「全部」才同时显示两组卡片。卡片数字只算当前这个人的事项（共用事项两边都算）；点卡片里的「今天 / 计划 / 全部未完成 / 旗标」，列表只看那一类，再点一次同一张卡片回到那个人的全部。全部事项保存在私有数据仓库中：在「说明与同步」页填好一次令牌后，打开页面会自动拉取最新数据，任何改动（打卡、新建、编辑、删除）都会自动推送到云端；另一台设备打开页面、或切回页面时，也会自动拿到最新数据。若两台设备同时改了同一批数据、出现冲突提示，按页面右上角同步状态的提示，去「说明与同步」页手动点一次「拉取」或「推送」决定以哪边为准即可。另外，页面里有家长专用的「给孩子加分」：只有输对密码（密码在页面里自己设置，只保存哈希）才能给孩子加分，加多少分和事由都当场填写并留记录；加分计入孩子分数，孩子分数 = 100 − 累计扣分 + 累计加分，可以超过 100 分。孩子能看到加分记录，但没有密码不能加分、也不能删除加分记录。</p>
   </div>
 
       <div class="card" id="github">
@@ -217,18 +251,25 @@ function cleanLog(raw){
  if(!raw||typeof raw!=='object')return null;
  return {date:/^\d{4}-\d{2}-\d{2}$/.test(String(raw.date||''))?String(raw.date):TODAY,title:String(raw.title||'').slice(0,200),pen:num(raw.pen,0,0,20),op:raw.op==='kid'?'kid':'me',who:['me','kid','shared'].indexOf(raw.who)>-1?raw.who:'me',reason:String(raw.reason||'').slice(0,200)};
 }
+function cleanBonus(raw){
+ if(!raw||typeof raw!=='object')return null;
+ var points=Math.floor(num(raw.points,0,0,100));if(!(points>0))return null;
+ return {date:/^\d{4}-\d{2}-\d{2}$/.test(String(raw.date||''))?String(raw.date):TODAY,points:points,reason:String(raw.reason||'').slice(0,100),ts:num(raw.ts,0,0,1e15)};
+}
 function cleanData(p){
  if(!p||!Array.isArray(p.tasks))return null;
  var tasks=p.tasks.map(cleanTask).filter(Boolean);
  var logs=Array.isArray(p.logs)?p.logs.map(cleanLog).filter(Boolean):[];
+ var bonusLogs=Array.isArray(p.bonusLogs)?p.bonusLogs.map(cleanBonus).filter(Boolean):[];
+ var bonusPwdHash=typeof p.bonusPwdHash==='string'?p.bonusPwdHash.slice(0,200):'';
  var maxId=tasks.reduce(function(m,t){return Math.max(m,t.id)},0);
- return {tasks:tasks,logs:logs,doneCount:num(p.doneCount,0,0,1e9),doneBy:{me:num(p.doneBy&&p.doneBy.me,0,0,1e9),kid:num(p.doneBy&&p.doneBy.kid,0,0,1e9)},seq:Math.max(num(p.seq,100,0,1e9),maxId),filter:'me'};
+ return {tasks:tasks,logs:logs,bonusLogs:bonusLogs,bonusPwdHash:bonusPwdHash,doneCount:num(p.doneCount,0,0,1e9),doneBy:{me:num(p.doneBy&&p.doneBy.me,0,0,1e9),kid:num(p.doneBy&&p.doneBy.kid,0,0,1e9)},seq:Math.max(num(p.seq,100,0,1e9),maxId),filter:'me'};
 }
-var state={tasks:seed.map(cleanTask).filter(Boolean),doneCount:0,doneBy:{me:0,kid:0},logs:[],filter:'me',seq:100};
+var state={tasks:seed.map(cleanTask).filter(Boolean),doneCount:0,doneBy:{me:0,kid:0},logs:[],bonusLogs:[],bonusPwdHash:'',filter:'me',seq:100};
 try{var saved=localStorage.getItem('reminders-web-v3');if(saved){var cd=cleanData(JSON.parse(saved));if(cd)state=cd;}}catch(e){}
 var syncState={sha:null,dirty:false,at:0};
 try{var rawSaved=localStorage.getItem('reminders-web-v3');if(rawSaved){var rp=JSON.parse(rawSaved);if(rp&&rp.sync){syncState.sha=rp.sync.sha||null;syncState.dirty=!!rp.sync.dirty;syncState.at=num(rp.sync.at,0,0,1e15);}else if(state.tasks.length||state.logs.length){syncState.dirty=true;}}}catch(e){}
-function save(){try{localStorage.setItem('reminders-web-v3',JSON.stringify({tasks:state.tasks,logs:state.logs,doneCount:state.doneCount,doneBy:state.doneBy||{me:0,kid:0},seq:state.seq,sync:{sha:syncState.sha,dirty:syncState.dirty,at:syncState.at}}));}catch(e){}}
+function save(){try{localStorage.setItem('reminders-web-v3',JSON.stringify({tasks:state.tasks,logs:state.logs,bonusLogs:state.bonusLogs||[],bonusPwdHash:state.bonusPwdHash||'',doneCount:state.doneCount,doneBy:state.doneBy||{me:0,kid:0},seq:state.seq,sync:{sha:syncState.sha,dirty:syncState.dirty,at:syncState.at}}));}catch(e){}}
 function ownerName(o){return o==='me'?'我':o==='kid'?'孩子':'共用'}
 function repeatText(t){var iv=num(t.interval,1,1,365);if(t.repeat==='daily')return '🔁 每天';if(t.repeat==='everyN')return '🔁 每隔 '+iv+' 天';if(t.repeat==='weekly')return '🔁 每周';if(t.repeat==='monthly')return '🔁 每月'+num(t.anchorDay,1,1,31)+'号';if(t.repeat==='weekdays'){var n=['日','一','二','三','四','五','六'];return '🔁 每周'+(t.weekdays||[]).map(function(x){return n[num(x,0,0,6)]}).join('、')}return '单次'}
 function fmt(dt){return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0')}
@@ -280,6 +321,7 @@ function render(){
  var ck=document.getElementById('cardsKid');if(ck)ck.style.display=state.filter==='me'?'none':'';
  var pm=document.getElementById('pillMe');if(pm)pm.style.display=state.filter==='kid'?'none':'';
  var pk=document.getElementById('pillKid');if(pk)pk.style.display=state.filter==='me'?'none':'';
+ var bcd=document.getElementById('bonusCard');if(bcd)bcd.style.display=state.filter==='me'?'none':'';
  var personName=state.filter==='me'?'我':state.filter==='kid'?'孩子':'全部';
  var viewNames={today:'今天',plan:'计划',open:'全部未完成',flag:'旗标'};
  document.getElementById('filterLabel').textContent='显示：'+personName+(viewMode!=='all'?' · '+viewNames[viewMode]:'');
@@ -295,10 +337,12 @@ function render(){
  });
  var mePen=state.logs.filter(function(l){return l.op==='me'}).reduce(function(s,l){return s+num(l.pen,0,0,20)},0);
  var kidPen=state.logs.filter(function(l){return l.op==='kid'}).reduce(function(s,l){return s+num(l.pen,0,0,20)},0);
+ var kidBonus=(state.bonusLogs||[]).reduce(function(s,b){return s+num(b.points,0,0,100)},0);
  document.getElementById('scoreMe').textContent=Math.max(0,100-mePen);
- document.getElementById('scoreKid').textContent=Math.max(0,100-kidPen);
+ document.getElementById('scoreKid').textContent=Math.max(0,100-kidPen+kidBonus);
  document.getElementById('cumMe').textContent=mePen;
  document.getElementById('cumKid').textContent=kidPen;
+ document.getElementById('bonusKid').textContent=kidBonus;
  var profLogs=state.logs.filter(function(l){return state.filter==='all'||l.op===state.filter});
  document.getElementById('totalPenalty').textContent=profLogs.reduce(function(s,l){return s+num(l.pen,0,0,20)},0);
  var doneForProf=state.filter==='all'?state.doneCount:num((state.doneBy||{})[state.filter],0,0,1e9);
@@ -330,8 +374,12 @@ function render(){
  var chart=document.getElementById('chart');chart.innerHTML='';
  for(var i=6;i>=0;i--){var dd=new Date(TODAY+'T12:00:00');dd.setDate(dd.getDate()-i);var ds=fmt(dd);var v=profLogs.filter(function(l){return l.date===ds}).reduce(function(s,l){return s+num(l.pen,0,0,20)},0);var cell=document.createElement('div');var bar=document.createElement('i');bar.style.height=Math.min(70,Math.max(4,v*6))+'px';var lab=document.createElement('span');lab.textContent=(dd.getMonth()+1)+'/'+dd.getDate();var lab2=document.createElement('span');lab2.textContent='-'+v;cell.appendChild(bar);cell.appendChild(lab);cell.appendChild(document.createElement('br'));cell.appendChild(lab2);chart.appendChild(cell)}
  var logBox=document.getElementById('logList');logBox.innerHTML='';
- if(!profLogs.length){var lp=document.createElement('p');lp.textContent='还没有扣分记录。';logBox.appendChild(lp);}
- else{profLogs.slice().reverse().slice(0,12).forEach(function(l){var d=document.createElement('div');d.textContent='−'+num(l.pen,0,0,20)+' 分 · '+l.title+' ';var sub=document.createElement('span');sub.style.color='var(--sub)';sub.textContent=l.date+' · '+(l.op==='kid'?'孩子':'我')+' · '+l.reason;d.appendChild(sub);logBox.appendChild(d)})}
+ var entries=profLogs.map(function(l){return {date:l.date,ts:0,l:l}});
+ if(state.filter!=='me'){(state.bonusLogs||[]).forEach(function(b){entries.push({date:b.date,ts:b.ts||0,b:b})})}
+ entries.sort(function(a,b){if(a.date!==b.date)return a.date<b.date?1:-1;return (b.ts||0)-(a.ts||0)});
+ if(!entries.length){var lp=document.createElement('p');lp.textContent='还没有分数记录。';logBox.appendChild(lp);}
+ else{entries.slice(0,12).forEach(function(e){var d=document.createElement('div');if(e.b){var bs=document.createElement('span');bs.style.color='var(--green)';bs.style.fontWeight='700';bs.textContent='+'+e.b.points+' 分 · 奖励加分 · '+e.b.reason+' ';d.appendChild(bs);var bsub=document.createElement('span');bsub.style.color='var(--sub)';bsub.textContent=e.b.date+' · 孩子';d.appendChild(bsub);}else{var l=e.l;d.textContent='−'+num(l.pen,0,0,20)+' 分 · '+l.title+' ';var sub=document.createElement('span');sub.style.color='var(--sub)';sub.textContent=l.date+' · '+(l.op==='kid'?'孩子':'我')+' · '+l.reason;d.appendChild(sub);}logBox.appendChild(d)})}
+ renderBonus();
  save();
 }
 function currentOp(){return state.filter==='kid'?'kid':'me'}
@@ -432,9 +480,107 @@ document.querySelectorAll('.stat[data-view]').forEach(function(el){el.addEventLi
  render();
  document.getElementById('listCard').scrollIntoView({behavior:'smooth',block:'start'});
 })});
-function payload(){return JSON.stringify({version:3,exportedAt:new Date().toISOString(),tasks:state.tasks,logs:state.logs,doneCount:state.doneCount,doneBy:state.doneBy||{me:0,kid:0},seq:state.seq},null,2)}
+/* ---- 给孩子加分：密码门禁（只存哈希、随数据同步），只作用于孩子 ---- */
+var bonusUI='locked';
+async function hashPwd(pw){
+ try{
+  if(window.crypto&&crypto.subtle&&crypto.subtle.digest){
+   var buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('reminders-bonus:'+pw));
+   return 'sha256:'+Array.prototype.map.call(new Uint8Array(buf),function(b){return ('0'+b.toString(16)).slice(-2)}).join('');
+  }
+ }catch(e){}
+ var h=0x811c9dc5;var s=String(pw);for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,0x01000193)>>>0}
+ return 'fnv1a:'+('0000000'+h.toString(16)).slice(-8);
+}
+function bonusHasPwd(){return !!(state.bonusPwdHash&&String(state.bonusPwdHash).length)}
+function renderBonus(){
+ var locked=document.getElementById('bonusLocked');if(!locked)return;
+ document.getElementById('bonusGate').style.display=bonusUI==='gate'?'':'none';
+ document.getElementById('bonusPanel').style.display=bonusUI==='panel'?'':'none';
+ locked.style.display=bonusUI==='locked'?'':'none';
+ document.getElementById('bonusLockHint').textContent=bonusHasPwd()?'已设置密码。孩子能看到下面的加分记录，但没有密码不能加分、也不能删除记录。':'还没设置密码：点上面的按钮，先设一个只有你知道的密码。';
+ if(bonusUI==='gate'){
+  var isSet=bonusHasPwd();
+  document.getElementById('bonusGateTitle').textContent=isSet?'输入加分密码':'先设置加分密码';
+  document.getElementById('bonusGateDesc').textContent=isSet?'输对密码才能进入加分。':'这个密码只有你知道，以后每次加分都要先输它；存下来的只是密码的哈希，看不到原文。';
+  document.getElementById('bonusPwd2Row').style.display=isSet?'none':'';
+  document.getElementById('btnBonusGateOk').textContent=isSet?'验证并进入':'设置密码并进入';
+ }
+ renderBonusList();
+}
+function renderBonusList(){
+ var ro=document.getElementById('bonusList');var ed=document.getElementById('bonusListEdit');
+ if(!ro||!ed)return;
+ ro.innerHTML='';ed.innerHTML='';
+ var list=(state.bonusLogs||[]).slice().sort(function(a,b){return (b.ts||0)-(a.ts||0)});
+ if(!list.length){var p1=document.createElement('p');p1.textContent='还没有加分记录。';ro.appendChild(p1);var p2=document.createElement('p');p2.textContent='还没有加分记录。';ed.appendChild(p2);return}
+ list.forEach(function(b){
+  function line(withDel){
+   var d=document.createElement('div');
+   var s=document.createElement('span');s.style.color='var(--green)';s.style.fontWeight='700';s.textContent='+'+b.points+' 分';
+   d.appendChild(s);
+   d.appendChild(document.createTextNode(' · '+b.reason+' '));
+   var sub=document.createElement('span');sub.style.color='var(--sub)';sub.textContent=b.date;d.appendChild(sub);
+   if(withDel){var btn=document.createElement('button');btn.className='btn danger small';btn.type='button';btn.textContent='删除';btn.style.marginLeft='8px';btn.addEventListener('click',function(){deleteBonus(b.ts)});d.appendChild(btn)}
+   return d;
+  }
+  ro.appendChild(line(false));ed.appendChild(line(true));
+ });
+}
+function deleteBonus(ts){
+ state.bonusLogs=(state.bonusLogs||[]).filter(function(b){return b.ts!==ts});
+ markDirty();render();
+ var m=document.getElementById('bonusMsg');if(m){m.style.color='var(--sub)';m.textContent='已删除一条加分记录，孩子分数已重新计算。'}
+}
+document.getElementById('btnBonusOpen').addEventListener('click',function(){bonusUI='gate';document.getElementById('bonusPwd1').value='';document.getElementById('bonusPwd2').value='';document.getElementById('bonusGateMsg').textContent='';renderBonus();var i=document.getElementById('bonusPwd1');if(i)i.focus()});
+document.getElementById('btnBonusGateCancel').addEventListener('click',function(){bonusUI='locked';renderBonus()});
+document.getElementById('btnBonusGateOk').addEventListener('click',async function(){
+ var msg=document.getElementById('bonusGateMsg');
+ var p1=document.getElementById('bonusPwd1').value;
+ if(!bonusHasPwd()){
+  var p2=document.getElementById('bonusPwd2').value;
+  if(p1.length<4){msg.textContent='密码至少 4 位。';return}
+  if(p1!==p2){msg.textContent='两次输入的密码不一致，请重新输入。';return}
+  state.bonusPwdHash=await hashPwd(p1);
+  document.getElementById('bonusPwd1').value='';document.getElementById('bonusPwd2').value='';
+  bonusUI='panel';markDirty();render();
+  var m=document.getElementById('bonusMsg');m.style.color='var(--green)';m.textContent='密码已设置好了。下面填分值和事由就能加分。';
+  return;
+ }
+ if(!p1){msg.textContent='先输入密码。';return}
+ var h=await hashPwd(p1);
+ if(h===state.bonusPwdHash){bonusUI='panel';msg.textContent='';document.getElementById('bonusPwd1').value='';renderBonus()}
+ else{msg.textContent='密码不对，请再试一次。';document.getElementById('bonusPwd1').value=''}
+});
+document.getElementById('btnBonusAdd').addEventListener('click',function(){
+ var msg=document.getElementById('bonusMsg');
+ var pts=Number(document.getElementById('bonusPoints').value);
+ if(!isFinite(pts)||Math.floor(pts)!==pts||pts<1||pts>100){msg.style.color='var(--red)';msg.textContent='分值要是 1–100 的整数。';return}
+ var reason=document.getElementById('bonusReason').value.trim();
+ if(!reason){msg.style.color='var(--red)';msg.textContent='事由必填，写一句为什么加分。';return}
+ if(!state.bonusLogs)state.bonusLogs=[];
+ state.bonusLogs.push({date:TODAY,points:pts,reason:reason.slice(0,100),ts:Date.now()});
+ document.getElementById('bonusPoints').value='';document.getElementById('bonusReason').value='';
+ markDirty();render();
+ var m=document.getElementById('bonusMsg');m.style.color='var(--green)';m.textContent='已给孩子 +'+pts+' 分（'+reason.slice(0,100)+'），正在自动同步到云端。';
+});
+document.getElementById('btnBonusLock').addEventListener('click',function(){bonusUI='locked';document.getElementById('bonusPoints').value='';document.getElementById('bonusReason').value='';document.getElementById('bonusMsg').textContent='';renderBonus()});
+document.getElementById('btnBonusChange').addEventListener('click',async function(){
+ var msg=document.getElementById('bonusChangeMsg');
+ var old=document.getElementById('bonusOldPwd').value;
+ var n1=document.getElementById('bonusNewPwd1').value;
+ var n2=document.getElementById('bonusNewPwd2').value;
+ if(await hashPwd(old)!==state.bonusPwdHash){msg.style.color='var(--red)';msg.textContent='旧密码不对。';return}
+ if(n1.length<4){msg.style.color='var(--red)';msg.textContent='新密码至少 4 位。';return}
+ if(n1!==n2){msg.style.color='var(--red)';msg.textContent='两次输入的新密码不一致。';return}
+ state.bonusPwdHash=await hashPwd(n1);
+ document.getElementById('bonusOldPwd').value='';document.getElementById('bonusNewPwd1').value='';document.getElementById('bonusNewPwd2').value='';
+ markDirty();render();
+ var m=document.getElementById('bonusChangeMsg');m.style.color='var(--green)';m.textContent='密码已修改，下次加分用新密码。';
+});
+function payload(){return JSON.stringify({version:3,exportedAt:new Date().toISOString(),tasks:state.tasks,logs:state.logs,bonusLogs:state.bonusLogs||[],bonusPwdHash:state.bonusPwdHash||'',doneCount:state.doneCount,doneBy:state.doneBy||{me:0,kid:0},seq:state.seq},null,2)}
 document.getElementById('btnExport').addEventListener('click',function(){var blob=new Blob([payload()],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='data.json';a.click()});
-document.getElementById('fileImport').addEventListener('change',function(ev){var f=ev.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){try{var cd=cleanData(JSON.parse(r.result));if(!cd)throw new Error('bad');state.tasks=cd.tasks;state.logs=cd.logs;state.doneCount=cd.doneCount;state.doneBy=cd.doneBy;state.seq=cd.seq;markDirty();render();document.getElementById('addMsg').textContent='导入成功，共 '+state.tasks.length+' 条。';}catch(e){document.getElementById('addMsg').textContent='导入失败：文件不是有效的 JSON 数据。'}};r.readAsText(f)});
+document.getElementById('fileImport').addEventListener('change',function(ev){var f=ev.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){try{var cd=cleanData(JSON.parse(r.result));if(!cd)throw new Error('bad');state.tasks=cd.tasks;state.logs=cd.logs;state.bonusLogs=cd.bonusLogs;state.bonusPwdHash=cd.bonusPwdHash;bonusUI='locked';state.doneCount=cd.doneCount;state.doneBy=cd.doneBy;state.seq=cd.seq;markDirty();render();document.getElementById('addMsg').textContent='导入成功，共 '+state.tasks.length+' 条。';}catch(e){document.getElementById('addMsg').textContent='导入失败：文件不是有效的 JSON 数据。'}};r.readAsText(f)});
 function b64Encode(str){return btoa(unescape(encodeURIComponent(str)))}
 function b64Decode(b){return decodeURIComponent(escape(atob(String(b||'').replace(/\s/g,''))))}
 /* ---- GitHub sync: config + token live only in this device's local storage, never in code ---- */
@@ -460,7 +606,7 @@ function setSync(kind,text){
  var m=document.getElementById('ghMsg');if(m)m.textContent='状态：'+text;
 }
 function syncLabel(){var b=document.getElementById('btnAutoSync');if(b)b.textContent='自动同步：'+(autoSyncEnabled?'开':'关')}
-function fingerprint(d){return JSON.stringify([d.tasks,d.logs,d.doneCount,d.doneBy||{me:0,kid:0}])}
+function fingerprint(d){return JSON.stringify([d.tasks,d.logs,d.doneCount,d.doneBy||{me:0,kid:0},d.bonusLogs||[],d.bonusPwdHash||''])}
 function markDirty(){syncState.dirty=true;save();if(autoSyncEnabled)setSync('pending','有新修改，马上自动同步到云端…');scheduleAutoPush()}
 function scheduleAutoPush(){if(!autoSyncEnabled)return;clearTimeout(pushTimer);pushTimer=setTimeout(autoCheck,2000)}
 async function ghFetchRemote(g){
@@ -480,7 +626,7 @@ async function doPush(g,sha){
  syncState.sha=newSha;syncState.dirty=false;syncState.at=Date.now();save();
 }
 function adoptRemote(r){
- state.tasks=r.cd.tasks;state.logs=r.cd.logs;state.doneCount=r.cd.doneCount;state.doneBy=r.cd.doneBy;state.seq=Math.max(state.seq,r.cd.seq);
+ state.tasks=r.cd.tasks;state.logs=r.cd.logs;state.bonusLogs=r.cd.bonusLogs;state.bonusPwdHash=r.cd.bonusPwdHash;bonusUI='locked';state.doneCount=r.cd.doneCount;state.doneBy=r.cd.doneBy;state.seq=Math.max(state.seq,r.cd.seq);
  syncState.sha=r.sha;syncState.dirty=false;syncState.at=Date.now();
  if(editingId!=null)resetForm();
  render();
