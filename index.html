@@ -69,7 +69,7 @@ label{font-size:13px;font-weight:600;color:var(--sub);display:block;margin:14px 
 .notice{border:1px solid #b8d8ff;background:#eef6ff;color:#123a66;border-radius:var(--r-card);padding:16px;font-size:13.5px;line-height:1.7}
 @media(prefers-color-scheme:dark){.notice{background:#0a243f;color:#bfe0ff;border-color:#1d4e7a}}
 .bar{height:8px;background:var(--seg-bg);border-radius:999px;overflow:hidden}.bar i{display:block;height:100%;background:var(--blue);border-radius:999px}
-.chart{display:flex;align-items:flex-end;gap:8px;height:96px;margin-top:12px}.chart div{flex:1;text-align:center;min-width:0}.chart i{display:block;background:var(--red);border-radius:5px 5px 0 0;min-height:4px}.chart span{font-size:11px;color:var(--sub)}
+.chart{display:flex;gap:8px;margin-top:12px}.chart .col{flex:1;text-align:center;min-width:0}.chart .plot{position:relative;height:104px}.chart .zero{position:absolute;left:2px;right:2px;top:50%;border-top:1px solid var(--line)}.chart .bar{position:absolute;left:50%;transform:translateX(-50%);width:72%;max-width:36px;display:block}.chart .bar.pos{background:var(--green);bottom:50%;border-radius:5px 5px 0 0}.chart .bar.neg{background:var(--red);top:50%;border-radius:0 0 5px 5px}.chart .bar.flat{background:var(--line);height:2px;top:calc(50% - 1px);border-radius:2px}.chart span{font-size:11px;color:var(--sub)}.chart .val{font-size:11.5px;font-weight:700}
 .task-actions{display:flex;flex-direction:column;gap:8px;flex:0 0 auto}
 .task.editing{outline:2px solid var(--blue);outline-offset:4px;border-radius:10px}
 .log{font-size:13.5px;line-height:1.65}.log div{padding:10px 0;border-bottom:1px dashed var(--line)}.log div:last-child{border-bottom:0}
@@ -170,7 +170,7 @@ button.pill:hover{border-color:var(--blue)}
         <p>完成率 <strong id="rateText">暂无打卡</strong> · 累计扣分 <strong id="totalPenalty">0</strong> 分</p>
         <div class="bar"><i id="rateBar" style="width:0%"></i></div>
         <p>每人从 100 分单独算：我的扣分只扣我的分，孩子的只扣孩子的分，共用事项按实际点「没做到」的人扣。孩子的分数还会加上家长的奖励加分、扣掉家长的临时扣分（见下方两张卡），孩子分数 = 100 − 累计扣分（含临时扣分） + 累计加分，最低 0 分，加分不封顶、可以超过 100 分。本统计区的「累计扣分」已包含临时扣分；临时扣分在下方记录里以红色「临时扣分」区分显示，顶部也单独列出「累计临时扣分」方便看构成。</p>
-        <h2 style="margin-top:18px">近 7 天扣分</h2>
+        <h2 style="margin-top:18px">近 7 天分数变化</h2>
         <div class="chart" id="chart"></div>
         <h2 style="margin-top:18px">扣分与加分记录</h2>
         <div class="log" id="logList"></div>
@@ -444,7 +444,10 @@ function render(){
    row.appendChild(chk);row.appendChild(main);row.appendChild(acts);row.appendChild(detail);container.appendChild(row);
  });
  var chart=document.getElementById('chart');chart.innerHTML='';
- for(var i=6;i>=0;i--){var dd=new Date(TODAY+'T12:00:00');dd.setDate(dd.getDate()-i);var ds=fmt(dd);var v=profLogs.filter(function(l){return l.date===ds}).reduce(function(s,l){return s+num(l.pen,0,0,20)},0);if(state.filter!=='me'){v+=(state.dedLogs||[]).filter(function(b){return b.date===ds}).reduce(function(s,b){return s+num(b.points,0,0,100)},0)}var cell=document.createElement('div');var bar=document.createElement('i');bar.style.height=Math.min(70,Math.max(4,v*6))+'px';var lab=document.createElement('span');lab.textContent=(dd.getMonth()+1)+'/'+dd.getDate();var lab2=document.createElement('span');lab2.textContent='-'+v;cell.appendChild(bar);cell.appendChild(lab);cell.appendChild(document.createElement('br'));cell.appendChild(lab2);chart.appendChild(cell)}
+ var nets=[];
+ for(var i=6;i>=0;i--){var dd=new Date(TODAY+'T12:00:00');dd.setDate(dd.getDate()-i);var ds=fmt(dd);var pen=profLogs.filter(function(l){return l.date===ds}).reduce(function(s,l){return s+num(l.pen,0,0,20)},0);var bon=0;if(state.filter!=='me'){pen+=(state.dedLogs||[]).filter(function(b){return b.date===ds}).reduce(function(s,b){return s+num(b.points,0,0,100)},0);bon=(state.bonusLogs||[]).filter(function(b){return b.date===ds}).reduce(function(s,b){return s+num(b.points,0,0,100)},0)}nets.push({dd:dd,net:bon-pen})}
+ var maxAbs=nets.reduce(function(m,x){return Math.max(m,Math.abs(x.net))},0);
+ nets.forEach(function(x){var cell=document.createElement('div');cell.className='col';var plot=document.createElement('div');plot.className='plot';var zl=document.createElement('div');zl.className='zero';plot.appendChild(zl);var bar=document.createElement('i');if(x.net>0){bar.className='bar pos';bar.style.height=Math.max(3,Math.round(x.net/maxAbs*46))+'px'}else if(x.net<0){bar.className='bar neg';bar.style.height=Math.max(3,Math.round(-x.net/maxAbs*46))+'px'}else{bar.className='bar flat'}plot.appendChild(bar);cell.appendChild(plot);var lab=document.createElement('span');lab.textContent=(x.dd.getMonth()+1)+'/'+x.dd.getDate();cell.appendChild(lab);cell.appendChild(document.createElement('br'));var lab2=document.createElement('span');lab2.className='val';lab2.style.color=x.net>0?'var(--green)':x.net<0?'var(--red)':'var(--sub)';lab2.textContent=x.net>0?('+'+x.net):x.net<0?('−'+(-x.net)):'0';cell.appendChild(lab2);chart.appendChild(cell)});
  var logBox=document.getElementById('logList');logBox.innerHTML='';
  var entries=profLogs.map(function(l){return {date:l.date,ts:0,l:l}});
  if(state.filter!=='me'){(state.bonusLogs||[]).forEach(function(b){entries.push({date:b.date,ts:b.ts||0,b:b})});(state.dedLogs||[]).forEach(function(b){entries.push({date:b.date,ts:b.ts||0,d:b})})}
