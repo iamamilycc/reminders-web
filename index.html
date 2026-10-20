@@ -31,6 +31,7 @@ h1{font-size:22px;font-weight:700;line-height:1.25;margin:4px 0 0;letter-spacing
 @media(min-width:860px){#userSeg button{flex:0 1 auto}#pageTabs{display:inline-flex}#pageTabs button{flex:0 1 auto;padding-left:22px;padding-right:22px}}
 .pill{display:inline-flex;align-items:center;flex-wrap:wrap;gap:2px;background:var(--card);border:1px solid var(--line);padding:9px 14px;border-radius:999px;font-size:14px;font-weight:600;min-height:44px;box-shadow:var(--shadow)}
 .pill span{font-weight:800}
+.pill .segm{white-space:nowrap;font-weight:600}
 #syncPill{font-size:12.5px;font-weight:500;color:var(--sub);min-height:36px;padding:7px 12px;align-self:flex-start;box-shadow:none}
 @media(min-width:860px){#syncPill{align-self:flex-end}}
 .grid4{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0 4px}
@@ -100,7 +101,7 @@ button.pill:hover{border-color:var(--blue)}
     </div>
     <div class="controls">
       <div class="seg" id="userSeg"><button data-u="me" class="on">👤 我</button><button data-u="kid">🧒 孩子</button><button data-u="all">全部</button></div>
-      <div class="scores"><button type="button" class="pill" id="pillMe" title="点一下跳到统计">我的分数 <span id="scoreMe">100</span> · 累计扣分 <span id="cumMe">0</span> 分</button><button type="button" class="pill" id="pillKid" title="点一下跳到统计">孩子分数 <span id="scoreKid">100</span> · 累计扣分 <span id="cumKid">0</span> 分 · 累计加分 <span id="bonusKid">0</span> 分 · 累计临时扣分 <span id="tempPenKid">0</span> 分</button></div>
+      <div class="scores"><button type="button" class="pill" id="pillMe" title="点一下跳到统计"><span class="segm">我的分数 <span id="scoreMe">100</span></span> · <span class="segm">累计扣分 <span id="cumMe">0</span> 分</span></button><button type="button" class="pill" id="pillKid" title="点一下跳到统计"><span class="segm">孩子分数 <span id="scoreKid">100</span></span> · <span class="segm">累计扣分 <span id="cumKid">0</span> 分</span> · <span class="segm">累计加分 <span id="bonusKid">0</span> 分</span> · <span class="segm">累计临时扣分 <span id="tempPenKid">0</span> 分</span></button></div>
       <span class="pill" id="syncPill">☁️ 同步：…</span>
     </div>
   </div>
