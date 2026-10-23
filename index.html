@@ -76,6 +76,15 @@ label{font-size:13px;font-weight:600;color:var(--sub);display:block;margin:14px 
 .task-actions{display:flex;flex-direction:column;gap:8px;flex:0 0 auto}
 .task.editing{outline:2px solid var(--blue);outline-offset:4px;border-radius:10px}
 .log{font-size:13.5px;line-height:1.65}.log div{padding:10px 0;border-bottom:1px dashed var(--line)}.log div:last-child{border-bottom:0}
+.dayrow{border-bottom:1px solid var(--line)}.dayrow:last-child{border-bottom:0}
+.dayhead{display:flex;align-items:center;gap:10px;width:100%;background:none;border:0;padding:8px 2px;min-height:44px;cursor:pointer;color:inherit;font:inherit;text-align:left}
+.daydate{font-size:14.5px;font-weight:600;white-space:nowrap}
+.daynet{margin-left:auto;font-weight:800;font-size:15px;white-space:nowrap}
+.daychev{color:var(--sub);font-size:12px;white-space:nowrap;flex:0 0 auto}
+.daydetail{padding:0 2px 12px;font-size:13.5px;line-height:1.65;animation:detailIn .22s ease}
+.daydetail .dline{padding:6px 0;border-bottom:1px dashed var(--line)}
+.daytotal{display:flex;flex-wrap:wrap;gap:2px 14px;margin-top:8px;font-weight:700}
+.daytotal span{white-space:nowrap}
 details{border-top:1px solid var(--line);padding-top:12px;margin-top:12px}summary{cursor:pointer;font-weight:700;padding:10px 0}
 code{background:var(--inset);padding:2px 5px;border-radius:6px;font-size:12px;word-break:break-all}
 .flex{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
@@ -173,8 +182,9 @@ button.pill:hover{border-color:var(--blue)}
         <p>完成率 <strong id="rateText">暂无打卡</strong> · 累计扣分 <strong id="totalPenalty">0</strong> 分</p>
         <div class="bar"><i id="rateBar" style="width:0%"></i></div>
         <p>每人从 100 分单独算：我的扣分只扣我的分，孩子的只扣孩子的分，共用事项按实际点「没做到」的人扣。孩子的分数还会加上家长的奖励加分、扣掉家长的临时扣分（见下方两张卡），孩子分数 = 100 − 累计扣分（含临时扣分） + 累计加分，最低 0 分，加分不封顶、可以超过 100 分。本统计区的「累计扣分」已包含临时扣分；临时扣分在下方记录里以红色「临时扣分」区分显示，顶部也单独列出「累计临时扣分」方便看构成。</p>
-        <h2 style="margin-top:18px">近 7 天分数变化</h2>
-        <div class="chart" id="chart"></div>
+        <h2 style="margin-top:18px">近 30 天每日记录</h2>
+        <p style="margin-top:2px">最近 30 天（含今天）每天的分数变化，点任意一天展开看当天明细，再点一次收起。</p>
+        <div id="dailyList"></div>
         <h2 style="margin-top:18px">扣分与加分记录</h2>
         <div class="log" id="logList"></div>
       </div>
@@ -377,6 +387,7 @@ function rolloverOverdue(){
 function visible(t){if(state.filter==='all')return true;return t.owner===state.filter||t.owner==='shared'}
 var viewMode='all';
 var expandedIds={};
+var expandedDays={};
 function inView(t){
  if(viewMode==='today')return !t.done&&t.due<=TODAY;
  if(viewMode==='plan')return !t.done&&t.due>TODAY;
@@ -452,11 +463,63 @@ function render(){
    acts.appendChild(miss);acts.appendChild(tog);
    row.appendChild(chk);row.appendChild(main);row.appendChild(acts);row.appendChild(detail);container.appendChild(row);
  });
- var chart=document.getElementById('chart');chart.innerHTML='';
- var nets=[];
- for(var i=6;i>=0;i--){var dd=new Date(TODAY+'T12:00:00');dd.setDate(dd.getDate()-i);var ds=fmt(dd);var pen=profLogs.filter(function(l){return l.date===ds}).reduce(function(s,l){return s+num(l.pen,0,0,20)},0);var bon=0;if(state.filter!=='me'){pen+=(state.dedLogs||[]).filter(function(b){return b.date===ds}).reduce(function(s,b){return s+num(b.points,0,0,100)},0);bon=(state.bonusLogs||[]).filter(function(b){return b.date===ds}).reduce(function(s,b){return s+num(b.points,0,0,100)},0)}nets.push({dd:dd,net:bon-pen})}
- var maxAbs=nets.reduce(function(m,x){return Math.max(m,Math.abs(x.net))},0);
- nets.forEach(function(x){var cell=document.createElement('div');cell.className='col';var plot=document.createElement('div');plot.className='plot';var zl=document.createElement('div');zl.className='zero';plot.appendChild(zl);var bar=document.createElement('i');if(x.net>0){bar.className='bar pos';bar.style.height=Math.max(3,Math.round(x.net/maxAbs*46))+'px'}else if(x.net<0){bar.className='bar neg';bar.style.height=Math.max(3,Math.round(-x.net/maxAbs*46))+'px'}else{bar.className='bar flat'}plot.appendChild(bar);cell.appendChild(plot);var lab=document.createElement('span');lab.textContent=(x.dd.getMonth()+1)+'/'+x.dd.getDate();cell.appendChild(lab);cell.appendChild(document.createElement('br'));var lab2=document.createElement('span');lab2.className='val';lab2.style.color=x.net>0?'var(--green)':x.net<0?'var(--red)':'var(--sub)';lab2.textContent=x.net>0?('+'+x.net):x.net<0?('−'+(-x.net)):'0';cell.appendChild(lab2);chart.appendChild(cell)});
+ /* 近 30 天每日记录：只控制显示范围，底层 logs/bonusLogs/dedLogs 全部保留（累计分数靠全量历史计算） */
+ var dailyBox=document.getElementById('dailyList');dailyBox.innerHTML='';
+ var dayNames=['日','一','二','三','四','五','六'];
+ for(var di=0;di<30;di++){
+   var dObj=new Date(TODAY+'T12:00:00');dObj.setDate(dObj.getDate()-di);var dStr=fmt(dObj);
+   var dLogs=profLogs.filter(function(l){return l.date===dStr});
+   var dBon=[],dDed=[];
+   if(state.filter!=='me'){dBon=(state.bonusLogs||[]).filter(function(b){return b.date===dStr});dDed=(state.dedLogs||[]).filter(function(b){return b.date===dStr})}
+   var dPenSum=dLogs.reduce(function(s,l){return s+num(l.pen,0,0,20)},0)+dDed.reduce(function(s,b){return s+num(b.points,0,0,100)},0);
+   var dBonSum=dBon.reduce(function(s,b){return s+num(b.points,0,0,100)},0);
+   var dNet=dBonSum-dPenSum;
+   (function(ds,dd,logs,bons,deds,penSum,bonSum,net){
+     var rowEl=document.createElement('div');rowEl.className='dayrow';
+     var head=document.createElement('button');head.type='button';head.className='dayhead';head.setAttribute('aria-expanded',expandedDays[ds]?'true':'false');
+     var dateSpan=document.createElement('span');dateSpan.className='daydate';dateSpan.textContent=(dd.getMonth()+1)+'月'+dd.getDate()+'日 · 周'+dayNames[dd.getDay()]+(ds===TODAY?' · 今天':'');
+     var netSpan=document.createElement('span');netSpan.className='daynet';netSpan.style.color=net>0?'var(--green)':net<0?'var(--red)':'var(--sub)';netSpan.textContent=net>0?('+'+net+' 分'):net<0?('−'+(-net)+' 分'):'0 分';
+     var chev=document.createElement('span');chev.className='daychev';chev.textContent=expandedDays[ds]?'收起 ▴':'明细 ▾';
+     head.appendChild(dateSpan);head.appendChild(netSpan);head.appendChild(chev);
+     head.addEventListener('click',function(){expandedDays[ds]=!expandedDays[ds];render()});
+     rowEl.appendChild(head);
+     if(expandedDays[ds]){
+       var det=document.createElement('div');det.className='daydetail';
+       if(!logs.length&&!bons.length&&!deds.length){
+         var ep=document.createElement('div');ep.style.color='var(--sub)';ep.textContent='当天没有扣分或加分记录';det.appendChild(ep);
+       }else{
+         logs.forEach(function(l){
+           var ln=document.createElement('div');ln.className='dline';
+           var s1=document.createElement('span');s1.style.color='var(--red)';s1.style.fontWeight='700';s1.style.whiteSpace='nowrap';s1.textContent='−'+num(l.pen,0,0,20)+' 分';
+           ln.appendChild(s1);ln.appendChild(document.createTextNode(' · '+l.title+' '));
+           var sub=document.createElement('span');sub.style.color='var(--sub)';sub.textContent=(l.op==='kid'?'孩子':'我');ln.appendChild(sub);
+           det.appendChild(ln);
+         });
+         bons.forEach(function(b){
+           var ln=document.createElement('div');ln.className='dline';
+           var s1=document.createElement('span');s1.style.color='var(--green)';s1.style.fontWeight='700';s1.style.whiteSpace='nowrap';s1.textContent='+'+num(b.points,0,0,100)+' 分';
+           ln.appendChild(s1);ln.appendChild(document.createTextNode(' · 奖励加分 · '+b.reason+' '));
+           var sub=document.createElement('span');sub.style.color='var(--sub)';sub.textContent='孩子';ln.appendChild(sub);
+           det.appendChild(ln);
+         });
+         deds.forEach(function(b){
+           var ln=document.createElement('div');ln.className='dline';
+           var s1=document.createElement('span');s1.style.color='var(--red)';s1.style.fontWeight='700';s1.style.whiteSpace='nowrap';s1.textContent='−'+num(b.points,0,0,100)+' 分';
+           ln.appendChild(s1);ln.appendChild(document.createTextNode(' · 临时扣分 · '+b.reason+' '));
+           var sub=document.createElement('span');sub.style.color='var(--sub)';sub.textContent='孩子';ln.appendChild(sub);
+           det.appendChild(ln);
+         });
+         var tot=document.createElement('div');tot.className='daytotal';
+         var t1=document.createElement('span');t1.textContent='扣分合计 '+penSum+' 分';tot.appendChild(t1);
+         var t2=document.createElement('span');t2.textContent='加分合计 '+bonSum+' 分';tot.appendChild(t2);
+         var t3=document.createElement('span');t3.style.color=net>0?'var(--green)':net<0?'var(--red)':'var(--sub)';t3.textContent='净变化 '+(net>0?'+'+net:net<0?'−'+(-net):'0')+' 分';tot.appendChild(t3);
+         det.appendChild(tot);
+       }
+       rowEl.appendChild(det);
+     }
+     dailyBox.appendChild(rowEl);
+   })(dStr,dObj,dLogs,dBon,dDed,dPenSum,dBonSum,dNet);
+ }
  var logBox=document.getElementById('logList');logBox.innerHTML='';
  var entries=profLogs.map(function(l){return {date:l.date,ts:0,l:l}});
  if(state.filter!=='me'){(state.bonusLogs||[]).forEach(function(b){entries.push({date:b.date,ts:b.ts||0,b:b})});(state.dedLogs||[]).forEach(function(b){entries.push({date:b.date,ts:b.ts||0,d:b})})}
