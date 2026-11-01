@@ -266,7 +266,7 @@ button.pill:hover{border-color:var(--blue)}
   <div class="card" style="margin-top:16px">
     <h2>📖 使用说明</h2>
     <p>能在浏览器打开的版本：苹果提醒事项的用法 + 没做到扣分统计 + 循环重复 + 两个人分别打卡。云端已改用 GitHub：公开仓库放网页、用 GitHub Pages 打开；私有仓库放打卡数据。令牌只需填一次，之后打开页面自动拉取最新数据、改完自动推送同步，不用再手动点。</p>
-    <p>点圆圈 = 完成，循环事项会自动生成下一次；点「没做到」= 按难度扣分并进入下一次。没点「没做到」的就算当天做到了：循环事项（每天 / 每周 / 指定星期 / 每月 / 每隔 N 天）跨天会自动滚到下一次出现，不扣分，也不会以逾期形式留在「今天」和「全部未完成」里（每天的事项滚到今天时，是今天新一次的，不是昨天的逾期）；少数事项带一天补做宽限：到期当天没做完，第二天仍会留在「今天」里并标上「可补」，这一天里补做了点完成即可，点「没做到」照常扣分并进入下一次；如果这多留的一天也过去了还没点，才按上面的规矩自动滚走算做到，不会无限期挂着；一次性事项（不重复）是真待办，不适用自动滚动，到期没处理完会继续留在「今天」和「全部未完成」里提醒，直到点完成、点「没做到」或改期。难度定分：非常简单 2 分 · 简单 3 分 · 一般 5 分 · 较难 8 分 · 非常难 12 分，可单独改。点每条事项右边的「编辑」，可以改它的标题、归属、日期时间、循环和扣分，也能在编辑区里删除这条（删除要点两次确认）；改完会自动同步到云端。点顶部「我 / 孩子」，页面只显示那个人的卡片和提醒事项，另一个人的完全不出现；选「全部」才同时显示两组卡片。卡片数字只算当前这个人的事项（共用事项两边都算）；点卡片里的「今天 / 计划 / 全部未完成 / 旗标」，列表只看那一类，再点一次同一张卡片回到那个人的全部。全部事项保存在私有数据仓库中：在「说明与同步」页填好一次令牌后，打开页面会自动拉取最新数据，任何改动（打卡、新建、编辑、删除）都会自动推送到云端；另一台设备打开页面、或切回页面时，也会自动拿到最新数据。若两台设备同时改了同一批数据、出现冲突提示，按页面右上角同步状态的提示，去「说明与同步」页手动点一次「拉取」或「推送」决定以哪边为准即可。另外，页面里有家长专用的「给孩子加分」：只有输对密码（密码在页面里自己设置，只保存哈希）才能给孩子加分，加多少分和事由都当场填写并留记录；加分计入孩子分数，孩子分数 = 100 − 累计扣分 + 累计加分，可以超过 100 分。孩子能看到加分记录，但没有密码不能加分、也不能删除加分记录。另外，页面里还有家长专用的「给孩子临时扣分」：家长输密码后可给孩子临时扣分，分值当场定、事由必填，计入孩子累计扣分，与加分共用同一个密码；孩子能看到临时扣分记录，但没有密码不能扣分、也不能删除临时扣分记录。</p>
+    <p>点圆圈 = 完成，循环事项会自动生成下一次；点「没做到」= 按难度扣分并进入下一次。没点「没做到」的就算当天做到了：循环事项（每天 / 每周 / 指定星期 / 每月 / 每隔 N 天）跨天会自动滚到下一次出现，不扣分，也不会以逾期形式留在「今天」和「全部未完成」里（每天的事项滚到今天时，是今天新一次的，不是昨天的逾期）；少数事项带一天补做宽限：到期当天没做完，第二天仍会留在「今天」里并标上「可补」，这一天里补做了点完成即可，点「没做到」照常扣分并进入下一次；如果这多留的一天也过去了还没点，才按上面的规矩自动滚走算做到，不会无限期挂着；一次性事项（不重复）是真待办，不适用自动滚动，到期没处理完会继续留在「今天」和「全部未完成」里提醒，直到点完成、点「没做到」或改期。难度定分：非常简单 2 分 · 简单 3 分 · 一般 5 分 · 较难 8 分 · 非常难 12 分，可单独改。点每条事项右边的「编辑」，可以改它的标题、归属、日期时间、循环和扣分，也能在编辑区里删除这条（删除要点两次确认）；改完会自动同步到云端。点顶部「我 / 孩子」，页面只显示那个人的卡片和提醒事项，另一个人的完全不出现；选「全部」才同时显示两组卡片。卡片数字只算当前这个人的事项（共用事项两边都算）；点卡片里的「今天 / 计划 / 全部未完成 / 旗标」，列表只看那一类，再点一次同一张卡片回到那个人的全部。全部事项保存在私有数据仓库中：在「说明与同步」页填好一次令牌后，打开页面会自动拉取最新数据，任何改动（打卡、新建、编辑、删除）都会自动推送到云端；另一台设备打开页面、或切回页面时，也会自动拿到最新数据。两台设备同时改了数据也不用担心：同步是合并式的，不会拿一台设备的数据覆盖另一台——扣分、加分、临时扣分记录取两边的合集，一条都不会因为同步被删掉；同一条事项两边都改过时，以最后修改的那一份为准；在一台设备上删掉的事项或记录，也不会被另一台设备的旧数据带回来。每次合并、导入或恢复之前，页面还会自动把替换前的数据在本机存一份备份（在「说明与同步」的同步卡片下方，最多 10 份），万一哪次数据不对，可以从备份里恢复。另外，页面里有家长专用的「给孩子加分」：只有输对密码（密码在页面里自己设置，只保存哈希）才能给孩子加分，加多少分和事由都当场填写并留记录；加分计入孩子分数，孩子分数 = 100 − 累计扣分 + 累计加分，可以超过 100 分。孩子能看到加分记录，但没有密码不能加分、也不能删除加分记录。另外，页面里还有家长专用的「给孩子临时扣分」：家长输密码后可给孩子临时扣分，分值当场定、事由必填，计入孩子累计扣分，与加分共用同一个密码；孩子能看到临时扣分记录，但没有密码不能扣分、也不能删除临时扣分记录。</p>
   </div>
 
       <div class="card" id="github">
@@ -274,7 +274,7 @@ button.pill:hover{border-color:var(--blue)}
         <p><strong>第 1 步 · 公开代码仓库（放网页）：</strong>在 GitHub 新建一个 <strong>Public</strong> 仓库，例如 <code>reminders-web</code>，把本页的 <code>index.html</code> 放进去；再到仓库 Settings → Pages → Source 选 <code>main</code> 分支 / 根目录，保存后得到网址 <code>https://你的用户名.github.io/reminders-web/</code>，你和孩子都收藏这个网址打开。</p>
         <p><strong>第 2 步 · 私有数据仓库（放数据）：</strong>再新建一个 <strong>Private</strong> 仓库，例如 <code>reminders-data</code>，什么都不用放 — 第一次点「推送」时网页会自动在里面创建 <code>data.json</code>。</p>
         <p><strong>第 3 步 · 令牌：</strong>GitHub 头像 → Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token：只选私有数据仓库 <code>reminders-data</code>，权限只给 <code>Contents: Read and write</code>。生成后复制令牌（只显示一次）。</p>
-        <p><strong>第 4 步 · 在下面填好令牌（只需填这一次）：</strong>你和孩子在各自设备打开网页，各自填同一数据仓库和各自的令牌。之后全自动：打开页面自动拉取最新数据，打卡、改事项后自动推送；另一台设备打开页面或切回页面就会自动更新，不用再点推送 / 拉取（两个按钮保留作手动兜底）。</p>
+        <p><strong>第 4 步 · 在下面填好令牌（只需填这一次）：</strong>你和孩子在各自设备打开网页，各自填同一数据仓库和各自的令牌。之后全自动：打开页面自动拉取最新数据，打卡、改事项后自动推送；另一台设备打开页面或切回页面就会自动更新，不用再点推送 / 拉取（两个按钮保留作手动兜底）。同步时云端和本机的数据是先合并再写回的，不会互相覆盖，两边各自记的打卡、扣分、加分记录都会保留下来。</p>
         <label>数据仓库（GitHub 用户名 / 私有仓库名）</label><input id="ghRepo" value="iamamilycc/reminders-data" placeholder="例如：yourname/reminders-data" autocomplete="off">
         <div class="row">
           <div><label>数据文件路径</label><input id="ghPath" value="data.json"></div>
@@ -282,8 +282,10 @@ button.pill:hover{border-color:var(--blue)}
         </div>
         <label>代码仓库（选填，只用来拼 Pages 网址提示）</label><input id="ghCodeRepo" value="iamamilycc/reminders-web" placeholder="例如：yourname/reminders-web" autocomplete="off">
         <label>GitHub 个人访问令牌（只保存在这台设备本地）</label><input id="ghToken" type="password" placeholder="粘贴 Fine-grained token" autocomplete="off">
-        <div class="flex" style="margin-top:12px"><button class="btn" id="btnPush">↑ 推送到 GitHub</button><button class="btn secondary" id="btnPull">↓ 从 GitHub 拉取</button><button class="btn ghost" id="btnAutoSync">自动同步：开</button><button class="btn ghost" id="btnClearToken">清除本机令牌</button></div>
-        <p id="ghMsg">状态：填好令牌后自动同步：打开页面自动拉取，改动自动推送到私有仓库的 data.json；上面两个推送 / 拉取按钮是手动兜底。</p>
+        <div class="flex" style="margin-top:12px"><button class="btn" id="btnPush">↑ 推送到 GitHub（先合并）</button><button class="btn secondary" id="btnPull">↓ 从 GitHub 拉取（合并）</button><button class="btn ghost" id="btnAutoSync">自动同步：开</button><button class="btn ghost" id="btnClearToken">清除本机令牌</button></div>
+        <p id="ghMsg">状态：填好令牌后自动同步：打开页面自动拉取，改动自动推送。同步是合并式的：云端和本机的数据先合到一起再写回，扣分、加分记录取两边的合集，不会拿一边覆盖另一边；上面两个推送 / 拉取按钮是手动兜底，点的也是同一次合并同步。</p>
+        <div class="flex" style="margin-top:12px"><button class="btn ghost" id="btnBackupNow">立即备份本机数据</button></div>
+        <div id="backupBox" style="margin-top:10px"></div>
         <p id="ghPagesHint"></p>
         <details><summary>下载本页 / 操作步骤</summary>
           <p>公开仓库里只放网页文件，不要把令牌、<code>data.json</code> 或导出的备份传进公开仓库。数据永远只进私有仓库。</p>
@@ -316,7 +318,7 @@ function cleanTask(raw,idx){
  var weekdays=Array.isArray(raw.weekdays)?raw.weekdays.map(function(x){return num(x,0,0,6)}).filter(function(x,i,a){return a.indexOf(x)===i}):[];
  var due=/^\d{4}-\d{2}-\d{2}$/.test(String(raw.due||''))?String(raw.due):TODAY;
  var time=/^\d{2}:\d{2}$/.test(String(raw.time||''))?String(raw.time):'09:00';
- return {id:num(raw.id,idx+1,0,1e9),t:title,owner:owner,due:due,time:time,repeat:repeat,interval:num(raw.interval,1,1,365),weekdays:weekdays,anchorDay:num(raw.anchorDay,new Date(due+'T12:00:00').getDate(),1,31),pen:num(raw.pen,5,0,20),diff:num(raw.diff,5,0,20),flag:raw.flag?1:0,grace:Math.floor(num(raw.grace,0,0,365)),note:String(raw.note||'').slice(0,500),done:!!raw.done};
+ return {id:num(raw.id,idx+1,0,1e9),t:title,owner:owner,due:due,time:time,repeat:repeat,interval:num(raw.interval,1,1,365),weekdays:weekdays,anchorDay:num(raw.anchorDay,new Date(due+'T12:00:00').getDate(),1,31),pen:num(raw.pen,5,0,20),diff:num(raw.diff,5,0,20),flag:raw.flag?1:0,grace:Math.floor(num(raw.grace,0,0,365)),note:String(raw.note||'').slice(0,500),done:!!raw.done,upd:num(raw.upd,0,0,1e15)};
 }
 function cleanLog(raw){
  if(!raw||typeof raw!=='object')return null;
@@ -328,6 +330,12 @@ function cleanBonus(raw){
  return {date:/^\d{4}-\d{2}-\d{2}$/.test(String(raw.date||''))?String(raw.date):TODAY,points:points,reason:String(raw.reason||'').slice(0,100),ts:num(raw.ts,0,0,1e15)};
 }
 function cleanDed(raw){return cleanBonus(raw)}
+function cleanTomb(raw){
+ if(!raw||typeof raw!=='object')return null;
+ var kind=['task','bonus','ded'].indexOf(raw.kind)>-1?raw.kind:null;if(!kind)return null;
+ var key=String(raw.key==null?'':raw.key).slice(0,60);if(!key)return null;
+ return {kind:kind,key:key,ts:num(raw.ts,0,0,1e15)};
+}
 function cleanData(p){
  if(!p||!Array.isArray(p.tasks))return null;
  var tasks=p.tasks.map(cleanTask).filter(Boolean);
@@ -335,14 +343,15 @@ function cleanData(p){
  var bonusLogs=Array.isArray(p.bonusLogs)?p.bonusLogs.map(cleanBonus).filter(Boolean):[];
  var dedLogs=Array.isArray(p.dedLogs)?p.dedLogs.map(cleanDed).filter(Boolean):[];
  var bonusPwdHash=typeof p.bonusPwdHash==='string'?p.bonusPwdHash.slice(0,200):'';
+ var deleted=Array.isArray(p.deleted)?p.deleted.map(cleanTomb).filter(Boolean).slice(-1000):[];
  var maxId=tasks.reduce(function(m,t){return Math.max(m,t.id)},0);
- return {tasks:tasks,logs:logs,bonusLogs:bonusLogs,dedLogs:dedLogs,bonusPwdHash:bonusPwdHash,doneCount:num(p.doneCount,0,0,1e9),doneBy:{me:num(p.doneBy&&p.doneBy.me,0,0,1e9),kid:num(p.doneBy&&p.doneBy.kid,0,0,1e9)},seq:Math.max(num(p.seq,100,0,1e9),maxId),filter:'me'};
+ return {tasks:tasks,logs:logs,bonusLogs:bonusLogs,dedLogs:dedLogs,bonusPwdHash:bonusPwdHash,bonusPwdAt:num(p.bonusPwdAt,0,0,1e15),deleted:deleted,doneCount:num(p.doneCount,0,0,1e9),doneBy:{me:num(p.doneBy&&p.doneBy.me,0,0,1e9),kid:num(p.doneBy&&p.doneBy.kid,0,0,1e9)},seq:Math.max(num(p.seq,100,0,1e9),maxId),filter:'me'};
 }
-var state={tasks:seed.map(cleanTask).filter(Boolean),doneCount:0,doneBy:{me:0,kid:0},logs:[],bonusLogs:[],dedLogs:[],bonusPwdHash:'',filter:'me',seq:100};
+var state={tasks:seed.map(cleanTask).filter(Boolean),doneCount:0,doneBy:{me:0,kid:0},logs:[],bonusLogs:[],dedLogs:[],bonusPwdHash:'',bonusPwdAt:0,deleted:[],filter:'me',seq:100};
 try{var saved=localStorage.getItem('reminders-web-v3');if(saved){var cd=cleanData(JSON.parse(saved));if(cd)state=cd;}}catch(e){}
 var syncState={sha:null,dirty:false,at:0};
 try{var rawSaved=localStorage.getItem('reminders-web-v3');if(rawSaved){var rp=JSON.parse(rawSaved);if(rp&&rp.sync){syncState.sha=rp.sync.sha||null;syncState.dirty=!!rp.sync.dirty;syncState.at=num(rp.sync.at,0,0,1e15);}else if(state.tasks.length||state.logs.length){syncState.dirty=true;}}}catch(e){}
-function save(){try{localStorage.setItem('reminders-web-v3',JSON.stringify({tasks:state.tasks,logs:state.logs,bonusLogs:state.bonusLogs||[],dedLogs:state.dedLogs||[],bonusPwdHash:state.bonusPwdHash||'',doneCount:state.doneCount,doneBy:state.doneBy||{me:0,kid:0},seq:state.seq,sync:{sha:syncState.sha,dirty:syncState.dirty,at:syncState.at}}));}catch(e){}}
+function save(){try{localStorage.setItem('reminders-web-v3',JSON.stringify({tasks:state.tasks,logs:state.logs,bonusLogs:state.bonusLogs||[],dedLogs:state.dedLogs||[],bonusPwdHash:state.bonusPwdHash||'',bonusPwdAt:state.bonusPwdAt||0,deleted:state.deleted||[],doneCount:state.doneCount,doneBy:state.doneBy||{me:0,kid:0},seq:state.seq,sync:{sha:syncState.sha,dirty:syncState.dirty,at:syncState.at}}));}catch(e){}}
 function ownerName(o){return o==='me'?'我':o==='kid'?'孩子':'共用'}
 function repeatText(t){var iv=num(t.interval,1,1,365);if(t.repeat==='daily')return '🔁 每天';if(t.repeat==='everyN')return '🔁 每隔 '+iv+' 天';if(t.repeat==='weekly')return '🔁 每周';if(t.repeat==='monthly')return '🔁 每月'+num(t.anchorDay,1,1,31)+'号';if(t.repeat==='weekdays'){var n=['日','一','二','三','四','五','六'];return '🔁 每周'+(t.weekdays||[]).map(function(x){return n[num(x,0,0,6)]}).join('、')}return '单次'}
 function fmt(dt){return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0')}
@@ -532,8 +541,8 @@ function render(){
 }
 function currentOp(){return state.filter==='kid'?'kid':'me'}
 function taskOp(t){return t.owner==='me'||t.owner==='kid'?t.owner:currentOp()}
-function completeTask(id){var t=state.tasks.find(function(x){return x.id===id});if(!t||t.done)return;state.doneCount++;if(!state.doneBy)state.doneBy={me:0,kid:0};var op=taskOp(t);state.doneBy[op]=num(state.doneBy[op],0,0,1e9)+1;var nd=nextDate(t,t.due);if(nd){t.due=nd}else{t.done=true}markDirty();render()}
-function missTask(id){var t=state.tasks.find(function(x){return x.id===id});if(!t)return;state.logs.push({date:TODAY,title:t.t,pen:num(t.pen,0,0,20),op:taskOp(t),who:t.owner,reason:'手动标记没做到'});var nd=nextDate(t,t.due);if(nd){t.due=nd}else{t.done=true}markDirty();render()}
+function completeTask(id){var t=state.tasks.find(function(x){return x.id===id});if(!t||t.done)return;state.doneCount++;if(!state.doneBy)state.doneBy={me:0,kid:0};var op=taskOp(t);state.doneBy[op]=num(state.doneBy[op],0,0,1e9)+1;var nd=nextDate(t,t.due);if(nd){t.due=nd}else{t.done=true}t.upd=Date.now();markDirty();render()}
+function missTask(id){var t=state.tasks.find(function(x){return x.id===id});if(!t)return;state.logs.push({date:TODAY,title:t.t,pen:num(t.pen,0,0,20),op:taskOp(t),who:t.owner,reason:'手动标记没做到'});var nd=nextDate(t,t.due);if(nd){t.due=nd}else{t.done=true}t.upd=Date.now();markDirty();render()}
 var picked=[];var weekNames=['日','一','二','三','四','五','六'];var weekBtns=[];
 var wp=document.getElementById('weekPicker');weekNames.forEach(function(n,i){var b=document.createElement('button');b.type='button';b.textContent=n;b.addEventListener('click',function(){var ix=picked.indexOf(i);if(ix>-1){picked.splice(ix,1);b.classList.remove('on')}else{picked.push(i);b.classList.add('on')}});wp.appendChild(b);weekBtns.push(b)});
 function setPicked(arr){picked=(arr||[]).slice();weekBtns.forEach(function(b,i){b.classList.toggle('on',picked.indexOf(i)>-1)})}
@@ -547,7 +556,7 @@ function addTask(){
  if(repeat==='weekdays'&&picked.length===0){document.getElementById('addMsg').textContent='选了「指定星期」要至少点亮一天，例如周二、周三、周五。';return}
  var due=document.getElementById('fDate').value||TODAY;
  var t=cleanTask({id:++state.seq,t:title,owner:document.getElementById('fOwner').value,due:due,time:document.getElementById('fTime').value||'09:00',repeat:repeat,interval:+document.getElementById('fInterval').value,weekdays:picked.slice(),anchorDay:new Date(due+'T12:00:00').getDate(),pen:+document.getElementById('fPenalty').value||5,diff:+document.getElementById('fDiff').value,flag:document.getElementById('fFlag').value==='1'?1:0,note:document.getElementById('fNote').value.trim(),done:false},state.seq);
- state.tasks.push(t);document.getElementById('fTitle').value='';document.getElementById('addMsg').textContent='已添加：'+title+'（'+repeatText(t)+'）。';setFormOpen(false);markDirty();render();
+ t.upd=Date.now();state.tasks.push(t);document.getElementById('fTitle').value='';document.getElementById('addMsg').textContent='已添加：'+title+'（'+repeatText(t)+'）。';setFormOpen(false);markDirty();render();
 }
 var editingId=null;var deleteArmed=false;
 var formOpen=false;
@@ -599,7 +608,7 @@ function saveEdit(){
  var pv=document.getElementById('fPenalty').value;
  var nt=cleanTask({id:t.id,t:title,owner:document.getElementById('fOwner').value,due:due,time:document.getElementById('fTime').value||'09:00',repeat:repeat,interval:+document.getElementById('fInterval').value||t.interval,weekdays:picked.slice(),anchorDay:new Date(due+'T12:00:00').getDate(),pen:pv===''||pv==null?t.pen:+pv,diff:+document.getElementById('fDiff').value||t.diff,flag:document.getElementById('fFlag').value==='1'?1:0,grace:t.grace,note:document.getElementById('fNote').value.trim(),done:t.done},0);
  if(!nt)return;
- t.t=nt.t;t.owner=nt.owner;t.due=nt.due;t.time=nt.time;t.repeat=nt.repeat;t.interval=nt.interval;t.weekdays=nt.weekdays;t.anchorDay=nt.anchorDay;t.pen=nt.pen;t.diff=nt.diff;t.flag=nt.flag;t.grace=nt.grace;t.note=nt.note;
+ t.t=nt.t;t.owner=nt.owner;t.due=nt.due;t.time=nt.time;t.repeat=nt.repeat;t.interval=nt.interval;t.weekdays=nt.weekdays;t.anchorDay=nt.anchorDay;t.pen=nt.pen;t.diff=nt.diff;t.flag=nt.flag;t.grace=nt.grace;t.note=nt.note;t.upd=Date.now();
  resetForm();setFormOpen(false);markDirty();
  document.getElementById('addMsg').textContent='已保存修改：'+title+'（'+repeatText(t)+'）。';
  render();
@@ -607,6 +616,7 @@ function saveEdit(){
 function deleteEditing(){
  var t=state.tasks.find(function(x){return x.id===editingId});if(!t)return;
  if(!deleteArmed){deleteArmed=true;document.getElementById('btnDeleteTask').textContent='再点一次确认删除';document.getElementById('addMsg').textContent='确认要删除「'+t.t+'」吗？删除后这条事项就没了（已产生的扣分记录会保留）。再点一次「删除这条事项」确认，或点「取消编辑」放弃。';return}
+ addTomb('task',String(editingId));
  state.tasks=state.tasks.filter(function(x){return x.id!==editingId});
  var name=t.t;resetForm();setFormOpen(false);markDirty();
  document.getElementById('addMsg').textContent='已删除：'+name+'。';
@@ -688,6 +698,7 @@ function renderBonusList(){
  });
 }
 function deleteBonus(ts){
+ addTomb('bonus',String(ts));
  state.bonusLogs=(state.bonusLogs||[]).filter(function(b){return b.ts!==ts});
  markDirty();render();
  var m=document.getElementById('bonusMsg');if(m){m.style.color='var(--sub)';m.textContent='已删除一条加分记录，孩子分数已重新计算。'}
@@ -701,7 +712,7 @@ document.getElementById('btnBonusGateOk').addEventListener('click',async functio
   var p2=document.getElementById('bonusPwd2').value;
   if(p1.length<4){msg.textContent='密码至少 4 位。';return}
   if(p1!==p2){msg.textContent='两次输入的密码不一致，请重新输入。';return}
-  state.bonusPwdHash=await hashPwd(p1);
+  state.bonusPwdHash=await hashPwd(p1);state.bonusPwdAt=Date.now();
   document.getElementById('bonusPwd1').value='';document.getElementById('bonusPwd2').value='';
   bonusUI='panel';dedUI='panel';markDirty();render();
   var m=document.getElementById('bonusMsg');m.style.color='var(--green)';m.textContent='密码已设置好了。下面填分值和事由就能加分。';
@@ -733,7 +744,7 @@ document.getElementById('btnBonusChange').addEventListener('click',async functio
  if(await hashPwd(old)!==state.bonusPwdHash){msg.style.color='var(--red)';msg.textContent='旧密码不对。';return}
  if(n1.length<4){msg.style.color='var(--red)';msg.textContent='新密码至少 4 位。';return}
  if(n1!==n2){msg.style.color='var(--red)';msg.textContent='两次输入的新密码不一致。';return}
- state.bonusPwdHash=await hashPwd(n1);
+ state.bonusPwdHash=await hashPwd(n1);state.bonusPwdAt=Date.now();
  document.getElementById('bonusOldPwd').value='';document.getElementById('bonusNewPwd1').value='';document.getElementById('bonusNewPwd2').value='';
  markDirty();render();
  var m=document.getElementById('bonusChangeMsg');m.style.color='var(--green)';m.textContent='密码已修改，下次加分用新密码。';
@@ -774,6 +785,7 @@ function renderDedList(){
  });
 }
 function deleteDed(ts){
+ addTomb('ded',String(ts));
  state.dedLogs=(state.dedLogs||[]).filter(function(b){return b.ts!==ts});
  markDirty();render();
  var m=document.getElementById('dedMsg');if(m){m.style.color='var(--sub)';m.textContent='已删除一条临时扣分记录，孩子分数与累计扣分已重新计算。'}
@@ -787,7 +799,7 @@ document.getElementById('btnDedGateOk').addEventListener('click',async function(
   var p2=document.getElementById('dedPwd2').value;
   if(p1.length<4){msg.textContent='密码至少 4 位。';return}
   if(p1!==p2){msg.textContent='两次输入的密码不一致，请重新输入。';return}
-  state.bonusPwdHash=await hashPwd(p1);
+  state.bonusPwdHash=await hashPwd(p1);state.bonusPwdAt=Date.now();
   document.getElementById('dedPwd1').value='';document.getElementById('dedPwd2').value='';
   dedUI='panel';bonusUI='panel';markDirty();render();
   var m=document.getElementById('dedMsg');m.style.color='var(--green)';m.textContent='密码已设置好了。下面填分值和事由就能临时扣分。';
@@ -812,9 +824,9 @@ document.getElementById('btnDedAdd').addEventListener('click',function(){
 });
 document.getElementById('btnDedLock').addEventListener('click',function(){dedUI='locked';bonusUI='locked';document.getElementById('dedPoints').value='';document.getElementById('dedReason').value='';document.getElementById('dedMsg').textContent='';renderDed();renderBonus()});
 document.getElementById('btnBackTop').addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})});
-function payload(){return JSON.stringify({version:3,exportedAt:new Date().toISOString(),tasks:state.tasks,logs:state.logs,bonusLogs:state.bonusLogs||[],dedLogs:state.dedLogs||[],bonusPwdHash:state.bonusPwdHash||'',doneCount:state.doneCount,doneBy:state.doneBy||{me:0,kid:0},seq:state.seq},null,2)}
+function payload(){return JSON.stringify({version:3,exportedAt:new Date().toISOString(),tasks:state.tasks,logs:state.logs,bonusLogs:state.bonusLogs||[],dedLogs:state.dedLogs||[],bonusPwdHash:state.bonusPwdHash||'',bonusPwdAt:state.bonusPwdAt||0,deleted:state.deleted||[],doneCount:state.doneCount,doneBy:state.doneBy||{me:0,kid:0},seq:state.seq},null,2)}
 document.getElementById('btnExport').addEventListener('click',function(){var blob=new Blob([payload()],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='data.json';a.click()});
-document.getElementById('fileImport').addEventListener('change',function(ev){var f=ev.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){try{var cd=cleanData(JSON.parse(r.result));if(!cd)throw new Error('bad');state.tasks=cd.tasks;state.logs=cd.logs;state.bonusLogs=cd.bonusLogs;state.dedLogs=cd.dedLogs;state.bonusPwdHash=cd.bonusPwdHash;bonusUI='locked';dedUI='locked';state.doneCount=cd.doneCount;state.doneBy=cd.doneBy;state.seq=cd.seq;markDirty();render();document.getElementById('addMsg').textContent='导入成功，共 '+state.tasks.length+' 条。';}catch(e){document.getElementById('addMsg').textContent='导入失败：文件不是有效的 JSON 数据。'}};r.readAsText(f)});
+document.getElementById('fileImport').addEventListener('change',function(ev){var f=ev.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){try{var cd=cleanData(JSON.parse(r.result));if(!cd)throw new Error('bad');backupLocal('导入 JSON 前');var merged=mergeData(state,cd);applyData(merged);markDirty();document.getElementById('addMsg').textContent='导入完成，已与本机数据合并：共 '+state.tasks.length+' 条事项、'+state.logs.length+' 条扣分记录。导入是合并不是覆盖，本机原有的记录一条没删。';}catch(e){document.getElementById('addMsg').textContent='导入失败：文件不是有效的 JSON 数据。'}};r.readAsText(f)});
 function b64Encode(str){return btoa(unescape(encodeURIComponent(str)))}
 function b64Decode(b){return decodeURIComponent(escape(atob(String(b||'').replace(/\s/g,''))))}
 /* ---- GitHub sync: config + token live only in this device's local storage, never in code ---- */
@@ -840,7 +852,134 @@ function setSync(kind,text){
  var m=document.getElementById('ghMsg');if(m)m.textContent='状态：'+text;
 }
 function syncLabel(){var b=document.getElementById('btnAutoSync');if(b)b.textContent='自动同步：'+(autoSyncEnabled?'开':'关')}
-function fingerprint(d){return JSON.stringify([d.tasks,d.logs,d.doneCount,d.doneBy||{me:0,kid:0},d.bonusLogs||[],d.dedLogs||[],d.bonusPwdHash||''])}
+function fingerprint(d){return JSON.stringify([d.tasks,d.logs,d.doneCount,d.doneBy||{me:0,kid:0},d.bonusLogs||[],d.dedLogs||[],d.bonusPwdHash||'',d.bonusPwdAt||0,d.deleted||[]])}
+/* ---- 合并式同步：两边数据取合集，任何一边的记录都不会因为同步被覆盖丢弃 ----
+   事项：按 id 并集，同 id 取最后修改（upd）的一份，平局再比到期日、完成状态、内容本身，
+   保证任何两台设备算出的合并结果完全一致，不会来回互相推送。
+   记录：扣分记录内容相同的视为同一条去重后取合集；加分/临时扣分按 ts 取合集。
+   删除：靠墓碑（deleted）传播，删掉的事项/记录不会被另一台设备的旧副本带回来。
+   完成计数取两边较大值；密码哈希取最后设置的一份。 */
+function logKey(l){return [l.date,l.title,l.pen,l.op,l.who,l.reason].join('|')}
+function tombMap(deleted){var m={};(deleted||[]).forEach(function(x){var k=x.kind+':'+x.key;if(m[k]==null||m[k]<x.ts)m[k]=x.ts});return m}
+function addTomb(kind,key){
+ if(!state.deleted)state.deleted=[];
+ key=String(key);var now=Date.now();var found=false;
+ state.deleted.forEach(function(x){if(x.kind===kind&&x.key===key){x.ts=now;found=true}});
+ if(!found)state.deleted.push({kind:kind,key:key,ts:now});
+}
+function mergeData(L,R){
+ var tombs={};
+ [L.deleted||[],R.deleted||[]].forEach(function(arr){arr.forEach(function(x){var k=x.kind+':'+x.key;if(!tombs[k]||tombs[k].ts<x.ts)tombs[k]={kind:x.kind,key:x.key,ts:x.ts}})});
+ var tlist=Object.keys(tombs).map(function(k){return tombs[k]});
+ tlist.sort(function(a,b){return (a.kind+':'+a.key).localeCompare(b.kind+':'+b.key)});
+ var tm=tombMap(tlist);
+ var byId={};
+ function consider(t){
+   var cur=byId[t.id];if(!cur){byId[t.id]=t;return}
+   var tu=num(t.upd,0,0,1e15),cu=num(cur.upd,0,0,1e15);
+   if(tu!==cu){if(tu>cu)byId[t.id]=t;return}
+   if(t.due!==cur.due){if(t.due>cur.due)byId[t.id]=t;return}
+   if(!!t.done!==!!cur.done){if(t.done)byId[t.id]=t;return}
+   if(JSON.stringify(t)>JSON.stringify(cur))byId[t.id]=t;
+ }
+ (L.tasks||[]).forEach(consider);(R.tasks||[]).forEach(consider);
+ var tasks=Object.keys(byId).map(function(k){return byId[k]}).filter(function(t){var dts=tm['task:'+t.id];return !(dts!=null&&dts>=num(t.upd,0,0,1e15))});
+ tasks.sort(function(a,b){return a.id-b.id});
+ var seen={},logs=[];
+ [L.logs||[],R.logs||[]].forEach(function(arr){arr.forEach(function(l){var k=logKey(l);if(!seen[k]){seen[k]=1;logs.push(l)}})});
+ logs.sort(function(a,b){var ka=logKey(a),kb=logKey(b);return ka<kb?-1:ka>kb?1:0});
+ function mergeRecs(la,ra,kind){
+   var m={},out=[];
+   [la||[],ra||[]].forEach(function(arr){arr.forEach(function(b){var k=String(b.ts||0)+'|'+b.date+'|'+b.points+'|'+b.reason;if(!m[k]){m[k]=1;out.push(b)}})});
+   out=out.filter(function(b){return tm[kind+':'+(b.ts||0)]==null});
+   out.sort(function(a,b){return (a.ts||0)-(b.ts||0)||String(a.reason).localeCompare(String(b.reason))});
+   return out;
+ }
+ var pwdHash=L.bonusPwdHash||'',pwdAt=num(L.bonusPwdAt,0,0,1e15);
+ if(num(R.bonusPwdAt,0,0,1e15)>pwdAt){pwdAt=num(R.bonusPwdAt,0,0,1e15);pwdHash=R.bonusPwdHash||''}
+ else if(!pwdHash&&R.bonusPwdHash){pwdHash=R.bonusPwdHash}
+ return {tasks:tasks,logs:logs,bonusLogs:mergeRecs(L.bonusLogs,R.bonusLogs,'bonus'),dedLogs:mergeRecs(L.dedLogs,R.dedLogs,'ded'),bonusPwdHash:pwdHash,bonusPwdAt:pwdAt,deleted:tlist,doneCount:Math.max(num(L.doneCount,0,0,1e9),num(R.doneCount,0,0,1e9)),doneBy:{me:Math.max(num(L.doneBy&&L.doneBy.me,0,0,1e9),num(R.doneBy&&R.doneBy.me,0,0,1e9)),kid:Math.max(num(L.doneBy&&L.doneBy.kid,0,0,1e9),num(R.doneBy&&R.doneBy.kid,0,0,1e9))},seq:Math.max(num(L.seq,0,0,1e9),num(R.seq,0,0,1e9)),filter:'me'};
+}
+function applyData(d){
+ state.tasks=d.tasks;state.logs=d.logs;state.bonusLogs=d.bonusLogs||[];state.dedLogs=d.dedLogs||[];state.bonusPwdHash=d.bonusPwdHash||'';state.bonusPwdAt=d.bonusPwdAt||0;state.deleted=d.deleted||[];bonusUI='locked';dedUI='locked';state.doneCount=d.doneCount;state.doneBy=d.doneBy||{me:0,kid:0};state.seq=Math.max(state.seq||0,d.seq||0);
+ if(editingId!=null)resetForm();
+ save();render();
+}
+/* ---- 本机备份安全网：合并/导入/恢复替换本机数据前，先把当前数据在本机存一份（最多 10 份） ---- */
+var BACKUP_KEY='reminders-web-backups-v1';
+function loadBackups(){try{var l=JSON.parse(localStorage.getItem(BACKUP_KEY)||'[]');return Array.isArray(l)?l:[]}catch(e){return[]}}
+function backupLocal(reason){
+ try{
+   var list=loadBackups();
+   list.unshift({at:Date.now(),reason:String(reason||''),data:{tasks:state.tasks,logs:state.logs,bonusLogs:state.bonusLogs||[],dedLogs:state.dedLogs||[],bonusPwdHash:state.bonusPwdHash||'',bonusPwdAt:state.bonusPwdAt||0,deleted:state.deleted||[],doneCount:state.doneCount,doneBy:state.doneBy||{me:0,kid:0},seq:state.seq}});
+   while(list.length>10)list.pop();
+   localStorage.setItem(BACKUP_KEY,JSON.stringify(list));
+ }catch(e){}
+ renderBackups();
+}
+function renderBackups(){
+ var box=document.getElementById('backupBox');if(!box)return;
+ var list=loadBackups();box.innerHTML='';
+ var h=document.createElement('p');h.style.color='var(--sub)';
+ if(!list.length){h.textContent='本机备份：暂无。每次同步合并、导入或恢复之前，页面会自动把替换前的数据在本机存一份（最多 10 份），万一哪次数据不对，可以从这里恢复。';box.appendChild(h);return}
+ h.textContent='本机备份（自动保存，只存这台设备）：点「恢复这份」会先把当前数据再存一份备份，然后把本机换成那份备份的内容并同步；云端已有的记录仍按合并规则保留，不会被删。';box.appendChild(h);
+ list.forEach(function(b,i){
+   var d=b.data||{};var n=(d.tasks||[]).length;var nl=(d.logs||[]).length+(d.bonusLogs||[]).length+(d.dedLogs||[]).length;
+   var row=document.createElement('div');row.className='flex';row.style.alignItems='center';row.style.marginTop='6px';
+   var s=document.createElement('span');s.textContent=new Date(b.at).toLocaleString()+' · '+n+' 条事项 · '+nl+' 条记录'+(b.reason?' · '+b.reason:'');
+   var btn=document.createElement('button');btn.className='btn ghost small';btn.type='button';btn.textContent='恢复这份';
+   btn.addEventListener('click',function(){restoreBackup(i,btn)});
+   row.appendChild(s);row.appendChild(btn);box.appendChild(row);
+ });
+}
+var restoreArm=-1;var restoreArmTimer=null;
+function restoreBackup(i,btn){
+ if(restoreArm!==i){restoreArm=i;btn.textContent='再点一次确认恢复';clearTimeout(restoreArmTimer);restoreArmTimer=setTimeout(function(){if(restoreArm===i){restoreArm=-1;btn.textContent='恢复这份'}},4000);return}
+ restoreArm=-1;clearTimeout(restoreArmTimer);
+ var b=loadBackups()[i];if(!b||!b.data){setSync('error','这份备份读不出来，换一份试试。');return}
+ var cd=cleanData(b.data);if(!cd){setSync('error','这份备份读不出来，换一份试试。');return}
+ backupLocal('恢复备份前');
+ applyData(cd);markDirty();
+ setSync('ok','已恢复 '+new Date(b.at).toLocaleString()+' 的本机备份，正在同步…');
+ renderBackups();
+}
+/* ---- 统一同步：拉取远端 → 与本机合并 → 合并结果比云端多时写回云端。全程不整份覆盖任何一边 ---- */
+async function syncNow(manual){
+ if(busySync){if(manual)setSync('syncing','正在同步中，请稍候再试。');else{clearTimeout(retryTimer);retryTimer=setTimeout(function(){syncNow(false)},3000)}return}
+ if(!autoSyncEnabled&&!manual){setSync('off','自动同步已关闭（可用「说明与同步」里的按钮手动同步）');return}
+ var g=ghParts();if(manual)ghSaveConfig();
+ if(!g.owner||!g.repo||!g.token){setSync(manual?'error':'off',manual?'请先填数据仓库（用户名/私有仓库名）和令牌。':'自动同步未开启 — 去「说明与同步」填一次令牌即可');return}
+ busySync=true;setSync('syncing',syncState.dirty?'正在把修改同步到云端…':'正在检查云端有没有新数据…');
+ try{
+   rolloverOverdue();
+   var r=await ghFetchRemote(g);
+   if(!r){
+     if(syncState.dirty||state.tasks.length||state.logs.length||(state.bonusLogs||[]).length||(state.dedLogs||[]).length){await doPush(g,null);setSync('ok','已同步到云端（云端原先没有数据文件，已新建）· '+timeStr(Date.now()));}
+     else setSync('ok','云端暂无数据，本机也没有待同步的修改');
+   }else{
+     var beforeRecs=state.logs.length+(state.bonusLogs||[]).length+(state.dedLogs||[]).length;
+     var merged=mergeData(state,r.cd);
+     var remoteFp=fingerprint(r.cd),mergedFp=fingerprint(merged);
+     if(fingerprint(state)!==mergedFp){backupLocal('同步合并前');applyData(merged)}
+     if(mergedFp!==remoteFp){
+       try{await doPush(g,r.sha)}
+       catch(e1){
+         var r2=await ghFetchRemote(g);
+         if(!r2)throw e1;
+         var merged2=mergeData(state,r2.cd);
+         if(fingerprint(state)!==fingerprint(merged2)){backupLocal('同步合并前');applyData(merged2)}
+         if(fingerprint(merged2)!==fingerprint(r2.cd))await doPush(g,r2.sha);
+         else{syncState.sha=r2.sha;syncState.dirty=false;syncState.at=Date.now();save()}
+       }
+     }else{
+       syncState.sha=r.sha;syncState.dirty=false;syncState.at=Date.now();save();
+     }
+     var gained=state.logs.length+(state.bonusLogs||[]).length+(state.dedLogs||[]).length-beforeRecs;
+     setSync('ok','已同步（两边数据已合并'+(gained>0?'，合入 '+gained+' 条本机原先没有的记录':'')+'，两边的记录都保留）· '+timeStr(Date.now()));
+   }
+ }catch(e){setSync('error','同步没完成 — '+e.message+'。两边的数据都还在、没有被覆盖，网络恢复后会自动重试，也可以去「说明与同步」手动再试一次。');}
+ busySync=false;
+}
 function markDirty(){syncState.dirty=true;save();if(autoSyncEnabled)setSync('pending','有新修改，马上自动同步到云端…');scheduleAutoPush()}
 function scheduleAutoPush(){if(!autoSyncEnabled)return;clearTimeout(pushTimer);pushTimer=setTimeout(autoCheck,2000)}
 async function ghFetchRemote(g){
@@ -859,68 +998,19 @@ async function doPush(g,sha){
  var newSha=sha;try{var j=await res.json();if(j&&j.content&&j.content.sha)newSha=j.content.sha;}catch(e){}
  syncState.sha=newSha;syncState.dirty=false;syncState.at=Date.now();save();
 }
-function adoptRemote(r){
- state.tasks=r.cd.tasks;state.logs=r.cd.logs;state.bonusLogs=r.cd.bonusLogs;state.dedLogs=r.cd.dedLogs;state.bonusPwdHash=r.cd.bonusPwdHash;bonusUI='locked';dedUI='locked';state.doneCount=r.cd.doneCount;state.doneBy=r.cd.doneBy;state.seq=Math.max(state.seq,r.cd.seq);
- syncState.sha=r.sha;syncState.dirty=false;syncState.at=Date.now();
- if(editingId!=null)resetForm();
- render();
-}
-async function autoCheck(){
- if(busySync){clearTimeout(retryTimer);retryTimer=setTimeout(autoCheck,3000);return}
- if(!autoSyncEnabled){setSync('off','自动同步已关闭（可用「说明与同步」里的按钮手动推送 / 拉取）');return}
- var g=ghParts();
- if(!g.owner||!g.repo||!g.token){setSync('off','自动同步未开启 — 去「说明与同步」填一次令牌即可');return}
- busySync=true;setSync('syncing',syncState.dirty?'正在把修改同步到云端…':'正在检查云端有没有新数据…');
- try{
-   var r=await ghFetchRemote(g);
-   if(!r){
-     if(syncState.dirty||state.tasks.length||state.logs.length){await doPush(g,null);setSync('ok','已自动同步到云端 · '+timeStr(Date.now()));}
-     else setSync('ok','云端暂无数据，本机也没有待同步的修改');
-   }else if(syncState.sha&&r.sha===syncState.sha){
-     if(syncState.dirty){await doPush(g,r.sha);setSync('ok','已自动同步到云端 · '+timeStr(Date.now()));}
-     else setSync('ok','已是云端最新'+(syncState.at?' · 上次同步 '+timeStr(syncState.at):''));
-   }else if(!syncState.dirty){
-     adoptRemote(r);setSync('ok','已自动拉取云端最新数据 · '+timeStr(Date.now()));
-   }else if(fingerprint(state)===fingerprint(r.cd)){
-     syncState.sha=r.sha;syncState.dirty=false;syncState.at=Date.now();save();setSync('ok','本机与云端内容一致 · '+timeStr(Date.now()));
-   }else{
-     setSync('conflict','云端和本机都有新修改，自动同步已暂停 — 去「说明与同步」点「拉取」用云端覆盖本机，或点「推送」用本机覆盖云端');
-   }
- }catch(e){setSync('error','自动同步失败 — '+e.message+'。网络恢复后会自动重试，也可去「说明与同步」手动推送 / 拉取。');}
- busySync=false;
-}
-async function pushGitHub(){
- var g=ghParts();ghSaveConfig();
- if(!g.owner||!g.repo||!g.token){setSync('error','请先填数据仓库（用户名/私有仓库名）和令牌。');return}
- if(busySync){setSync('syncing','正在同步中，请稍候再试。');return}
- busySync=true;setSync('syncing','正在推送到 GitHub…');
- try{
-   var r=await ghFetchRemote(g);
-   await doPush(g,r?r.sha:null);
-   setSync('ok','✅ 已存到 GitHub 私有仓库 '+g.owner+'/'+g.repo+' 的 '+g.path+'（分支 '+g.branch+'）· '+timeStr(Date.now()));
- }catch(e){setSync('error','推送失败 — '+e.message+'。常见原因：令牌没给该私有仓库 Contents 读写权限、仓库名/分支写错（新仓库默认分支可能是 main）、或令牌已过期。请检查后重试，或先用导出 JSON 备份。');}
- busySync=false;
-}
-async function pullGitHub(){
- var g=ghParts();ghSaveConfig();
- if(!g.owner||!g.repo||!g.token){setSync('error','请先填数据仓库和令牌再拉取。');return}
- if(busySync){setSync('syncing','正在同步中，请稍候再试。');return}
- busySync=true;setSync('syncing','正在从 GitHub 拉取…');
- try{
-   var r=await ghFetchRemote(g);
-   if(!r)throw new Error('GitHub 返回 404（通常是还没推送过、或路径/分支不对）');
-   adoptRemote(r);
-   setSync('ok','✅ 拉取成功，共 '+state.tasks.length+' 条事项，已显示私有仓库里的最新云端数据 · '+timeStr(Date.now()));
- }catch(e){setSync('error','拉取失败 — '+e.message);}
- busySync=false;
-}
+function autoCheck(){syncNow(false)}
+/* 手动「推送」「拉取」走的是同一次合并同步：先把云端和本机合到一起再写回，两边独有的记录都保留，不存在拿一边覆盖另一边 */
+async function pushGitHub(){await syncNow(true)}
+async function pullGitHub(){await syncNow(true)}
 document.getElementById('btnAutoSync').addEventListener('click',function(){autoSyncEnabled=!autoSyncEnabled;ghSaveConfig();syncLabel();if(autoSyncEnabled){setSync('syncing','自动同步已开启，正在检查云端…');autoCheck();}else{setSync('off','自动同步已关闭（可用下面按钮手动推送 / 拉取）');}});
 document.getElementById('btnPush').addEventListener('click',pushGitHub);
 document.getElementById('btnPull').addEventListener('click',pullGitHub);
+document.getElementById('btnBackupNow').addEventListener('click',function(){backupLocal('手动备份');setSync('ok','已把当前本机数据备份一份（见下方本机备份列表）。')});
 document.getElementById('btnDownload').addEventListener('click',function(){var blob=new Blob(['<!doctype html>\n'+document.documentElement.outerHTML],{type:'text/html'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='index.html';a.click()});
-document.getElementById('btnCopySteps').addEventListener('click',function(){var txt='GitHub 操作步骤：1) 新建 Public 仓库 reminders-web，放 index.html，Settings→Pages 选 main 分支开启，网址是 https://用户名.github.io/reminders-web/ ；2) 新建 Private 仓库 reminders-data，数据文件 data.json 由网页第一次推送时自动创建；3) Settings→Developer settings→Fine-grained tokens，只选 reminders-data，Contents 读写，生成令牌；4) 你和孩子在各自设备打开 Pages 网址，各自填同一数据仓库+各自令牌（令牌只存本机，不进代码）；5) 改完点推送，另一台先拉取再打卡。';if(navigator.clipboard)navigator.clipboard.writeText(txt);document.getElementById('ghMsg').textContent='状态：步骤已复制，可粘贴发给孩子照着做。';});
+document.getElementById('btnCopySteps').addEventListener('click',function(){var txt='GitHub 操作步骤：1) 新建 Public 仓库 reminders-web，放 index.html，Settings→Pages 选 main 分支开启，网址是 https://用户名.github.io/reminders-web/ ；2) 新建 Private 仓库 reminders-data，数据文件 data.json 由网页第一次推送时自动创建；3) Settings→Developer settings→Fine-grained tokens，只选 reminders-data，Contents 读写，生成令牌；4) 你和孩子在各自设备打开 Pages 网址，各自填同一数据仓库+各自令牌（令牌只存本机，不进代码）；5) 同步是合并式的，两边的记录会自动合到一起、不会互相覆盖，改完等几秒自动同步即可。';if(navigator.clipboard)navigator.clipboard.writeText(txt);document.getElementById('ghMsg').textContent='状态：步骤已复制，可粘贴发给孩子照着做。';});
 ghLoadConfig();
 syncLabel();
+renderBackups();
 render();
 autoCheck();
 document.addEventListener('visibilitychange',function(){if(!document.hidden){var _now=todayStr();if(_now!==TODAY){rolloverOverdue();render()}autoCheck()}});
